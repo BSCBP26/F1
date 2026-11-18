@@ -14,20 +14,21 @@
    COLOUR white / asphalt night, racing red = downforce & ICE, electric blue = MGU-K, amber = harvest; tunnel always dark
    TYPE Titillium Web 900/700 + Titillium Web 400
    LAYOUT title + tabs across top, picture full width, controls and readouts beneath; phone stacks title, picture, readouts, controls */
-:root{color-scheme:light dark;--bg:light-dark(#ffffff,#111214);--ink:light-dark(#16171b,#eceef2);--mute:light-dark(#5a5f6a,#a0a6b2);--line:light-dark(#e2e4e9,#2b2e35);--panel:light-dark(#f2f3f5,#1b1d22);--red:light-dark(#d70500,#ff3b30);--blue:light-dark(#1d5cff,#5b93ff);--amber:light-dark(#b97f00,#ffb81c);--grey:light-dark(#8a8f99,#7d838f);--wheel:light-dark(#24262b,#0b0c0e)}
+:root{color-scheme:dark;--bg:#0b0d12;--ink:#f2f4f8;--mute:#a2aab9;--line:#303643;--panel:#171c25;--red:#ff3535;--blue:#70a8ff;--amber:#ffc45a;--grey:#929aa7;--wheel:#090b0f}
+:root[data-theme=light]{color-scheme:light;--bg:#f7f8fa;--ink:#151a23;--mute:#566071;--line:#d8dde5;--panel:#e9edf3;--red:#d81723;--blue:#225cdd;--amber:#a36a00;--grey:#757d8a;--wheel:#22252b}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:16px/1.55 "Titillium Web",system-ui,sans-serif;overflow-x:clip}
+body{background:radial-gradient(ellipse at 65% -12%,color-mix(in srgb,var(--red) 11%,transparent),transparent 45%),var(--bg);color:var(--ink);font:16px/1.55 "Titillium Web",system-ui,sans-serif;overflow-x:clip}
 .kerb{height:8px;background:repeating-linear-gradient(90deg,var(--red) 0 30px,#f4f4f4 30px 60px)}
 .wrap{max-width:1320px;margin:0 auto;padding-inline:max(4vw,16px)}
-header{display:flex;flex-wrap:wrap;gap:14px 32px;align-items:end;justify-content:space-between;padding-block:20px 14px}
+header{display:flex;flex-wrap:wrap;gap:18px 32px;align-items:end;justify-content:space-between;padding-block:30px 24px}
 h1{font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spacing:-.02em;margin:0;font-weight:900}
 h2{font-size:clamp(24px,2.8vw,32px);line-height:1.1;letter-spacing:-.015em;margin:0 0 6px;font-weight:700;text-wrap:balance}
 h3{font-size:18px;margin:0 0 6px;font-weight:700}
 p{margin:0 0 10px}
 .sub{color:var(--mute);margin:6px 0 0;max-width:62ch}
-nav{display:flex;flex-wrap:wrap;gap:4px;background:var(--panel);padding:4px;border-radius:12px}
+nav{display:flex;flex-wrap:wrap;gap:4px;background:var(--panel);padding:4px;border:1px solid var(--line);border-radius:12px}
 nav a{padding:8px 16px;border-radius:9px;color:var(--ink);text-decoration:none;font-weight:600;min-height:44px;display:flex;align-items:center}
 nav a:hover{background:color-mix(in srgb,var(--ink) 8%,transparent)}
 nav a[aria-current=page]{background:var(--ink);color:var(--bg)}
@@ -35,7 +36,7 @@ main{padding-bottom:40px}
 .view{display:none}
 .view.on{display:block}
 .lead{color:var(--mute);max-width:75ch;margin-bottom:14px}
-.tun{position:relative;background:#0d0f12;border-radius:14px;overflow:hidden}
+.tun{position:relative;background:#0d0f12;border:1px solid #38404d;border-radius:18px;overflow:hidden;box-shadow:0 24px 65px rgba(0,0,0,.24)}
 #tc{display:block;width:100%;aspect-ratio:300/90;touch-action:none}
 .leg{position:absolute;left:12px;top:10px;display:flex;align-items:center;gap:8px;color:#d9dde4;font-size:13px;background:rgba(13,15,18,.7);padding:4px 10px;border-radius:8px}
 .leg i{display:block;width:110px;height:8px;border-radius:4px}
@@ -62,7 +63,7 @@ input[type=range]{width:100%;accent-color:var(--red);height:34px;margin:0;cursor
 .btn.pri{background:var(--red);border-color:var(--red);color:#fff}
 .btn[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 :focus-visible{outline:3px solid var(--blue);outline-offset:2px}
-.panel{background:var(--panel);border-radius:14px;padding:16px 18px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
 .g2{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:22px;margin-bottom:22px}
 .g2e{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;margin-bottom:22px}
 .fig{position:relative;min-height:300px}
@@ -859,7 +860,9 @@ let FLAPS=null;
 function target3(){const st=S.am==='straight';return {fw:S.fw,rw:S.rw,f:st?1:0,rh:S.rhF/1000,rr:S.rhR/1000,st,sys:S.sys}}
 function buildModel(p){
  p=p||target3();const st=p.f>0.5,rh=p.rh,rr=p.rr,fy=x=>rh+(rr-rh)*(x-0.95)/3.4;RH=rh;
- const A=aero(S,st?'straight':'corner'),FF=frontFlaps(p.fw,p.f,rh),RF=rearFlap(p.sys||S.sys,p.rw,p.f);FLAPS={f1:FF[0],r:RF};
+ const corner=aero(S,'corner'),straight=aero(S,'straight');
+ const parts=corner.parts.map((part,i)=>[part[0],part[1]+(straight.parts[i][1]-part[1])*p.f]);
+ const A={parts},FF=frontFlaps(p.fw,p.f,rh),RF=rearFlap(p.sys||S.sys,p.rw,p.f);FLAPS={f1:FF[0],r:RF};
  const RED=[0.8,0.05,0.04],CARB=[0.12,0.12,0.14],TYRE=[0.06,0.06,0.07],RIM=[0.55,0.57,0.62],YEL=[0.98,0.78,0.1],DARK=[0.2,0.21,0.24];
  const CH=[[0.12,0.04,0.21,0.27,2],[0.4,0.09,0.17,0.33,2.5],[0.9,0.14,0.14,0.43,3],[1.5,0.2,0.08,0.54,3],[2.1,0.25,0.06,0.62,3.5],[2.6,0.26,0.06,0.66,3.5],[2.95,0.22,0.08,0.92,3],[3.35,0.2,0.1,0.95,3],[3.8,0.17,0.1,0.78,3],[4.3,0.14,0.12,0.58,3],[4.8,0.1,0.15,0.42,2.5],[5.0,0.06,0.2,0.34,2]];
  const SP=[[1.95,0.3,0.1,0.45,4],[2.15,0.58,0.08,0.52,5],[2.6,0.62,0.07,0.52,5],[3.2,0.55,0.07,0.46,4],[3.8,0.35,0.08,0.38,3],[4.3,0.2,0.1,0.3,3]];
@@ -972,7 +975,7 @@ function init3d(){
  PR.mesh=prog(`attribute vec3 p;attribute vec3 n;attribute vec3 c;uniform mat4 M;varying vec3 vn;varying vec3 vc;varying vec3 vp;void main(){vn=n;vc=c;vp=p;gl_Position=M*vec4(p,1.0);}`,
  `precision mediump float;varying vec3 vn;varying vec3 vc;varying vec3 vp;uniform vec3 E;void main(){vec3 N=normalize(vn);vec3 V=normalize(E-vp);if(dot(N,V)<0.0)N=-N;vec3 L=normalize(vec3(-0.35,0.9,0.3));float d=max(dot(N,L),0.0);vec3 H=normalize(L+V);float s=pow(max(dot(N,H),0.0),40.0);float r=pow(1.0-max(dot(N,V),0.0),3.0);gl_FragColor=vec4(vc*(0.34+0.76*d)+vec3(0.32*s)+vec3(0.1,0.12,0.16)*r,1.0);}`);
  PR.line=prog(`attribute vec3 a;attribute vec3 b;attribute float sd;attribute vec3 c;attribute float s;uniform mat4 M;uniform vec2 R;uniform float W;varying vec3 vc;varying float vs;void main(){vec4 pa=M*vec4(a,1.0);vec4 pb=M*vec4(b,1.0);vec2 d=(pb.xy/pb.w-pa.xy/pa.w)*R;float l=length(d);d=l>0.00001?d/l:vec2(1.0,0.0);pa.xy+=vec2(-d.y,d.x)*sd*W/R*pa.w;gl_Position=pa;vc=c;vs=s;}`,
- `precision mediump float;varying vec3 vc;varying float vs;uniform float T;uniform float A;void main(){float k=fract(vs*0.9-T);float p=A*smoothstep(0.0,0.06,k)*(1.0-smoothstep(0.06,0.32,k));gl_FragColor=vec4(min(vc*(0.8+0.5*p)+vec3(0.3*p),vec3(1.0)),0.5+0.45*p+0.3*(1.0-A));}`);
+ `precision mediump float;varying vec3 vc;varying float vs;uniform float T;uniform float A;void main(){float phase=fract(vs*0.72-T);float head=smoothstep(0.0,0.045,phase)*(1.0-smoothstep(0.045,0.22,phase));float tail=smoothstep(0.16,0.42,phase)*(1.0-smoothstep(0.42,0.68,phase));float glow=A*(head+0.22*tail);vec3 color=min(vc*(0.72+0.65*glow)+vec3(0.23*glow),vec3(1.0));gl_FragColor=vec4(color,0.52+0.4*glow+0.25*(1.0-A));}`);
  PR.gr=prog(`attribute vec2 q;uniform mat4 M;varying vec2 w;void main(){w=q;gl_Position=M*vec4(q.x,0.0,q.y,1.0);}`,
  `precision mediump float;varying vec2 w;uniform float T;void main(){vec3 bg=vec3(0.043,0.05,0.067);vec2 f=fract(w);float gr=max(step(0.975,f.x),step(0.975,f.y));vec3 c=vec3(0.075,0.085,0.105)+gr*0.045;float belt=step(abs(w.y),1.15)*step(-2.0,w.x)*step(w.x,8.0);float st=step(0.5,fract((w.x-T*1.6)/0.8));c=mix(c,vec3(0.12,0.13,0.16)+st*0.025,belt);float sh=exp(-pow(abs((w.x-2.55)/2.7),4.0)-pow(abs(w.y/0.95),4.0));c*=1.0-0.6*sh;float fo=exp(-0.01*dot(w-vec2(3.0,0.0),w-vec2(3.0,0.0)));gl_FragColor=vec4(mix(bg,c,fo),1.0);}`);
  BUF.gr=g.createBuffer();g.bindBuffer(g.ARRAY_BUFFER,BUF.gr);g.bufferData(g.ARRAY_BUFFER,new Float32Array([-8,-10,18,-10,18,10,-8,-10,18,10,-8,10]),g.STATIC_DRAW);
@@ -992,7 +995,7 @@ function init3d(){
 const ST3={};
 function meshArrays(list,pres,store,fast){
  let nv=0,ni=0;for(const m of list){nv+=m.p.length/3;ni+=m.i.length}
- const v=new Float32Array(nv*9),ix=new Uint32Array(ni),o=[0,0,0],reuse=fast&&store&&store.cols&&store.cols.length===nv*3,cols=reuse?store.cols:new Float32Array(nv*3);let a=0,q=0,base=0,ci=0;
+ const v=new Float32Array(nv*9),ix=new Uint32Array(ni),o=[0,0,0],reuse=fast&&!pres&&store&&store.cols&&store.cols.length===nv*3,cols=reuse?store.cols:new Float32Array(nv*3);let a=0,q=0,base=0,ci=0;
  for(const m of list){const n=m.n;for(let k=0;k<m.p.length;k+=3){
    if(!reuse){let col=[m.c[k],m.c[k+1],m.c[k+2]];if(pres&&!m.noCp){vel(m.p[k]+n[k]*0.025,m.p[k+1]+n[k+1]*0.025,m.p[k+2]+n[k+2]*0.025,o);col=jet(0.52+(1-(o[0]*o[0]+o[1]*o[1]+o[2]*o[2]))*0.6)}cols[ci]=col[0];cols[ci+1]=col[1];cols[ci+2]=col[2]}
    v[a++]=m.p[k];v[a++]=m.p[k+1];v[a++]=m.p[k+2];v[a++]=n[k];v[a++]=n[k+1];v[a++]=n[k+2];v[a++]=cols[ci];v[a++]=cols[ci+1];v[a++]=cols[ci+2];ci+=3}
@@ -1015,7 +1018,7 @@ function uploadLines(){
  g.bindBuffer(g.ARRAY_BUFFER,BUF.lv);g.bufferData(g.ARRAY_BUFFER,v,g.DYNAMIC_DRAW);
  g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,BUF.li);g.bufferData(g.ELEMENT_ARRAY_BUFFER,ix,g.DYNAMIC_DRAW);lineCount=ni;
 }
-let D3=null,demoT=0;
+let D3=null,demoT=0,prev3=0;
 function rebuild3(){buildModel(D3||target3());uploadMesh(false);LINES=[];SEEDQ=seeds();lineDirty=true;stats3()}
 function stats3(){
  const A=aero(S,S.am),Q=q(250),o=[0,0,0];
@@ -1030,10 +1033,11 @@ function stats3(){
 }
 function frame3(ts){
  requestAnimationFrame(frame3);if(cur!=='tunnel3d'||!gl3)return;
+ const dt=Math.min(0.05,(ts-(prev3||ts))/1000);prev3=ts;
  if(T3.demo&&ts-demoT>3400){demoT=ts;S.am=S.am==='corner'?'straight':'corner';g3Upd[3]();mark3()}
  {const tg=target3();if(!D3){D3=Object.assign({},tg);need3=true}if(D3.sys!==tg.sys){D3.sys=tg.sys;need3=true;buildModel(D3);uploadMesh(true)}let mv=false;
-  {const dd=tg.f-D3.f;if(Math.abs(dd)>0.001){D3.f+=Math.sign(dd)*Math.min(Math.abs(dd),0.028);mv=true}}
-  for(const k of ['fw','rw','rh','rr']){const e=k[0]==='r'&&k!=='rw'?2e-4:0.06,dd=tg[k]-D3[k];if(Math.abs(dd)>e){D3[k]+=dd*0.16;mv=true}else D3[k]=tg[k]}
+  {const dd=tg.f-D3.f;if(Math.abs(dd)>0.0005){D3.f+=dd*(1-Math.exp(-dt*4.8));mv=true}else D3.f=tg.f}
+  for(const k of ['fw','rw','rh','rr']){const e=k==='rh'||k==='rr'?2e-5:0.015,dd=tg[k]-D3[k];if(Math.abs(dd)>e){D3[k]+=dd*(1-Math.exp(-dt*7));mv=true}else D3[k]=tg[k]}
   if(mv){buildModel(D3);uploadMesh(true);need3=true;last3=ts}
   else if(need3&&ts-last3>90){need3=false;rebuild3()}}
  if(SEEDQ.length){const t0=performance.now();while(SEEDQ.length&&performance.now()-t0<12){const s=SEEDQ.shift(),L=trace(s[0],s[1],s[2]);if(L.P.length>9){L.s0=Math.random()*4;LINES.push(L)}}lineDirty=true;$('#g3Busy').style.display=SEEDQ.length?'block':'none'}
@@ -1106,6 +1110,7 @@ function buildCarStates(){
  for(let k=0;k<K;k++){const f=k/(K-1);buildModel({fw:S.fw,rw:S.rw,f,rh:S.rhF/1000,rr:S.rhR/1000,sys:S.sys});
   const sh=mkMesh();quadUp(sh,[0.1,0.012,-0.98],[5.3,0.012,-0.98],[5.3,0.012,0.98],[0.1,0.012,0.98],[0.07,0.07,0.08]);sh.n=new Float32Array(12).map((_,i)=>i%3===1?1:0);sh.noCp=true;
   st.push(meshToGL(g,[sh,...MESH],TR.col==='pres'))}
+ if(TR.car)for(const old of TR.car){g.deleteBuffer(old.vb);g.deleteBuffer(old.ib)}
  key3='';D3=null;return st;
 }
 function lapData(){
@@ -1114,7 +1119,7 @@ function lapData(){
 }
 function initTrack(){
  const cv=$('#trk'),g=cv.getContext('webgl',{antialias:true,alpha:false});if(!g||!g.getExtension('OES_element_index_uint'))throw new Error('WebGL tidak tersedia');TR.gl=g;
- TR.P=prog(`attribute vec3 p;attribute vec3 n;attribute vec3 c;uniform mat4 M;uniform mat4 Mo;varying vec3 vn;varying vec3 vc;varying vec3 vp;void main(){vec4 w=Mo*vec4(p,1.0);vp=w.xyz;vn=(Mo*vec4(n,0.0)).xyz;vc=c;gl_Position=M*w;}`,
+ TR.P=prog(`attribute vec3 p;attribute vec3 n;attribute vec3 c;attribute vec3 p2;attribute vec3 n2;attribute vec3 c2;uniform float blendState;uniform mat4 M;uniform mat4 Mo;varying vec3 vn;varying vec3 vc;varying vec3 vp;void main(){vec3 pos=mix(p,p2,blendState);vec3 normal=normalize(mix(n,n2,blendState));vec4 w=Mo*vec4(pos,1.0);vp=w.xyz;vn=(Mo*vec4(normal,0.0)).xyz;vc=mix(c,c2,blendState);gl_Position=M*w;}`,
  `#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -1148,7 +1153,7 @@ function frameT(ts){
  const d1=norm3([pb[0]-pz[0],0,-(pb[1]-pz[1])]),d2=norm3([pc[0]-pa[0],0,-(pc[1]-pa[1])]),d=norm3([d1[0]+(d2[0]-d1[0])*fr,0,d1[2]+(d2[2]-d1[2])*fr]);
  const vNow=r.v[i]+(r.v[j]-r.v[i])*fr,vk=vNow*3.6,acc=(r.v[j]*r.v[j]-r.v[i]*r.v[i])/(2*DX);
  TR.aaL+=cl((S.aa&&Tk.aa[i]?1:0)-TR.aaL,-dt*2.4,dt*2.4);
- const st=TR.car[Math.round(TR.aaL*(TR.car.length-1))];
+ const state=TR.aaL*(TR.car.length-1),stateIndex=Math.min(TR.car.length-2,Math.floor(state)),stateMix=state-stateIndex,st=TR.car[stateIndex],stNext=TR.car[stateIndex+1];
  const Xl=[-d[0],0,-d[2]],Zl=[d[2],0,-d[0]],Tt=[P[0]-Xl[0]*2.6,P[1],P[2]-Xl[2]*2.6];
  const Mo=new Float32Array([Xl[0],0,Xl[2],0,0,1,0,0,Zl[0],0,Zl[2],0,Tt[0],Tt[1],Tt[2],1]),I=new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);
  let eT,gT,smooth=true;const up=(p,h)=>[p[0],p[1]+h,p[2]],add=(a,b,k)=>[a[0]+b[0]*k,a[1]+b[1]*k,a[2]+b[2]*k];
@@ -1160,7 +1165,7 @@ function frameT(ts){
  const g=TR.gl,cv=g.canvas,Wc=cv.width,Hc=cv.height,MVP=mul4(persp(TR.cam==='tv'?0.45:TR.cam==='onboard'?1.0:0.8,Wc/Hc,0.4,4000),lookAt(TR.eye,TR.tgt)),Pp=TR.P;
  g.viewport(0,0,Wc,Hc);g.clearColor(SKY[0],SKY[1],SKY[2],1);g.clear(g.COLOR_BUFFER_BIT|g.DEPTH_BUFFER_BIT);g.enable(g.DEPTH_TEST);
  g.useProgram(Pp.p);g.uniformMatrix4fv(Pp.un.M,false,MVP);g.uniform3fv(Pp.un.E,TR.eye);g.uniform3fv(Pp.un.SK,SKY);
- for(const [b,mo] of [[TR.world,I],[st,Mo]]){g.uniformMatrix4fv(Pp.un.Mo,false,mo);g.bindBuffer(g.ARRAY_BUFFER,b.vb);g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,b.ib);bindAttrs(Pp,[['p',3],['n',3],['c',3]],9,g);g.drawElements(g.TRIANGLES,b.n,g.UNSIGNED_INT,0);disableAttrs(Pp,g)}
+ for(const [b,next,mo,mixValue] of [[TR.world,TR.world,I,0],[st,stNext,Mo,stateMix]]){g.uniformMatrix4fv(Pp.un.Mo,false,mo);g.uniform1f(Pp.un.blendState,mixValue);g.bindBuffer(g.ARRAY_BUFFER,b.vb);g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,b.ib);bindAttrs(Pp,[['p',3],['n',3],['c',3]],9,g);g.bindBuffer(g.ARRAY_BUFFER,next.vb);bindAttrs(Pp,[['p2',3],['n2',3],['c2',3]],9,g);g.drawElements(g.TRIANGLES,b.n,g.UNSIGNED_INT,0);disableAttrs(Pp,g)}
  // HUD
  const prog=TR.tp/T2,wear=L.w0.map((w,q)=>w+(L.w1[q]-w)*prog),gear=GEARS.filter(x=>vk>=x).length;
  $('#hSpd').textContent=Math.round(vk);$('#hGear').textContent=gear;$('#hTime').textContent=fmtT(TR.tp)+' / '+fmtT(T2);
