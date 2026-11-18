@@ -800,7 +800,7 @@ $('#lClr').addEventListener('click',()=>{ghost=null;runLap()});
 new ResizeObserver(()=>{if(cur==='lap'){drawLap();drawStint()}}).observe($('#v-lap'));
 
 /* ================= TUNNEL 3D ================= */
-const T3=Object.assign({rake:'full',lc:'speed',cc:'pres',auto:true,anim:true,view:'q'},saved.T3||{});
+const T3=Object.assign({rake:'full',lc:'speed',cc:'livery',auto:false,anim:true,view:'q'},saved.T3||{});
 const JET=[[0.05,0.1,0.6],[0,0.42,1],[0,0.85,0.92],[0.12,0.85,0.25],[1,0.9,0],[1,0.42,0],[0.86,0.04,0.04]];
 function jet(t){t=cl(t,0,1)*(JET.length-1);const j=Math.min(JET.length-2,Math.floor(t)),q=t-j,a=JET[j],b=JET[j+1];return [a[0]+(b[0]-a[0])*q,a[1]+(b[1]-a[1])*q,a[2]+(b[2]-a[2])*q]}
 const jetCss='linear-gradient(90deg,'+JET.map(c=>`rgb(${c.map(v=>Math.round(v*255))})`).join(',')+')';
@@ -890,7 +890,19 @@ function buildModel(p){
  M.push(extrudeMesh(rect(4.94,5.0,0.34,0.8),-0.02,0.02,CARB));
  for(let k=0;k<6;k++){const x=1.7+k*0.48;hs.push([x,fy(x)+0.012,0.7,flG/6])}
  WH=[[0.95,0.36,0.79,0.36,0.19],[0.95,0.36,-0.79,0.36,0.19],[4.35,0.36,0.77,0.36,0.22],[4.35,0.36,-0.77,0.36,0.22]];
- WH.forEach(([x,y,z,r,hw])=>{M.push(extrudeMesh(circ(x,y,r,40),z-hw,z+hw,TYRE),extrudeMesh(circ(x,y,0.3,36),z-hw-0.003,z+hw+0.003,CMP[S.cmp].rgb),extrudeMesh(circ(x,y,0.22,28),z-hw-0.006,z+hw+0.006,RIM));sol.push(cylSdf(x,y,z,r,hw))});
+ WH.forEach(([x,y,z,r,hw])=>{
+  const face=Math.sign(z), rings=[[-1,.84],[-.97,.94],[-.84,.995],[-.64,1],[.64,1],[.84,.995],[.97,.94],[1,.84]];
+  const tyre=loftMesh(rings.map(([ax,rad])=>[ax*hw,r*rad,-r*rad,r*rad,2]),48,TYRE,31);
+  M.push(transformMesh(tyre,(a,b,c)=>[x+c,y+b,z+a]));
+  const side=z+face*hw;
+  const disc=(radius,depth,color)=>extrudeMesh(circ(x,y,radius,48),side,side+face*depth,color);
+  M.push(disc(.296,.002,CMP[S.cmp].rgb),disc(.285,.004,TYRE),disc(.211,.007,RIM),disc(.191,.009,CARB),disc(.052,.018,RIM));
+  for(let k=0;k<10;k++){
+   const a=k*Math.PI/5,at=(rad,angle)=>[x+rad*Math.cos(angle),y+rad*Math.sin(angle),side+face*.012];
+   M.push(beamMesh(at(.053,a),at(.184,a+.22),.009,DARK));
+  }
+  sol.push(cylSdf(x,y,z,r,hw));
+ });
  for(const sg of [-1,1]){
   M.push(beamMesh([0.8,0.47,sg*0.16],[0.95,0.48,sg*0.62],0.018,DARK),beamMesh([1.05,0.2,sg*0.14],[0.95,0.24,sg*0.62],0.018,DARK),
    beamMesh([4.15,0.45,sg*0.14],[4.35,0.46,sg*0.57],0.018,DARK),beamMesh([4.3,0.18,sg*0.14],[4.35,0.22,sg*0.57],0.018,DARK));
@@ -898,6 +910,12 @@ function buildModel(p){
   M.push(beamMesh(prev,[2.86,0.66,sg*0.24],0.022,DARK));
  }
  M.push(beamMesh([2.16,0.62,0],[2.3,0.86,0],0.024,DARK));
+ M.push(loftMesh([[2.92,.08,.89,1.02,3],[3.01,.14,.88,1.075,3],[3.24,.11,.88,1.03,3],[3.72,.045,.73,.81,2]],24,RED,20),
+  loftMesh([[2.915,.068,.905,1.006,3],[2.922,.072,.9,1.01,3]],18,CARB,2));
+ for(const side of [-1,1]){
+  M.push(beamMesh([1.96,.52,side*.18],[2.08,.62,side*.48],.013,CARB));
+  M.push(transformMesh(loftMesh([[2.01,.045,.60,.64,3],[2.06,.085,.59,.66,4],[2.16,.058,.60,.65,3]],18,RED,8),(x,y,z)=>[x,y,z+side*.5]));
+ }
  // potential-flow sources from the body's cross-section area
  const area=x=>{const c=interpSec(CH,cl(x,0.12,5)),fc=0.785+0.215*(1-2/c[4]);let a=4*c[1]*(c[3]-c[2])/2*fc;
   if(x>=1.95&&x<=4.3){const s=interpSec(SP,x),fs=0.785+0.215*(1-2/s[4]);a=Math.max(a,4*s[1]*(s[3]-s[2])/2*fs+2*c[1]*Math.max(0,c[3]-s[3]))}return x<0.12||x>5?0:a};
@@ -947,7 +965,7 @@ function trace(x,y,z){
 }
 function seeds(){
  const r=[],R=T3.rake,rh=RH;
- if(R==='full'){for(let iy=0;iy<9;iy++)for(let iz=0;iz<15;iz++)r.push([-1.6,0.04+iy*0.14,-1.26+iz*0.18])}
+ if(R==='full'){for(let iy=0;iy<6;iy++)for(let iz=0;iz<11;iz++)r.push([-1.6,0.04+iy*0.21,-1.25+iz*0.25])}
  else if(R==='fw'){for(const g of [-1,1])for(let iy=0;iy<5;iy++)for(let iz=0;iz<5;iz++)r.push([-0.9,rh+0.03+iy*0.06,g*(0.8+iz*0.06)]);for(let iz=-3;iz<=3;iz++)r.push([-0.9,rh+0.14,iz*0.22])}
  else if(R==='rw'){for(const g of [-1,1])for(let iy=0;iy<5;iy++)for(let iz=0;iz<5;iz++)r.push([3.7,0.74+iy*0.07,g*(0.3+iz*0.07)]);for(let iz=-2;iz<=2;iz++)r.push([3.7,1.0,iz*0.1])}
  else if(R==='floor'){for(let iy=0;iy<3;iy++)for(let iz=0;iz<11;iz++)r.push([0.7,0.006+iy*(rh*0.3+0.003),-0.6+iz*0.12]);for(let iz=0;iz<9;iz++)r.push([0.7,0.3,-0.68+iz*0.17])}
@@ -974,8 +992,12 @@ function init3d(){
  const g=gl3;
  PR.mesh=prog(`attribute vec3 p;attribute vec3 n;attribute vec3 c;uniform mat4 M;varying vec3 vn;varying vec3 vc;varying vec3 vp;void main(){vn=n;vc=c;vp=p;gl_Position=M*vec4(p,1.0);}`,
  `precision mediump float;varying vec3 vn;varying vec3 vc;varying vec3 vp;uniform vec3 E;void main(){vec3 N=normalize(vn);vec3 V=normalize(E-vp);if(dot(N,V)<0.0)N=-N;vec3 L=normalize(vec3(-0.35,0.9,0.3));float d=max(dot(N,L),0.0);vec3 H=normalize(L+V);float s=pow(max(dot(N,H),0.0),40.0);float r=pow(1.0-max(dot(N,V),0.0),3.0);gl_FragColor=vec4(vc*(0.34+0.76*d)+vec3(0.32*s)+vec3(0.1,0.12,0.16)*r,1.0);}`);
- PR.line=prog(`attribute vec3 a;attribute vec3 b;attribute float sd;attribute vec3 c;attribute float s;uniform mat4 M;uniform vec2 R;uniform float W;varying vec3 vc;varying float vs;void main(){vec4 pa=M*vec4(a,1.0);vec4 pb=M*vec4(b,1.0);vec2 d=(pb.xy/pb.w-pa.xy/pa.w)*R;float l=length(d);d=l>0.00001?d/l:vec2(1.0,0.0);pa.xy+=vec2(-d.y,d.x)*sd*W/R*pa.w;gl_Position=pa;vc=c;vs=s;}`,
- `precision mediump float;varying vec3 vc;varying float vs;uniform float T;uniform float A;void main(){float phase=fract(vs*0.72-T);float head=smoothstep(0.0,0.045,phase)*(1.0-smoothstep(0.045,0.22,phase));float tail=smoothstep(0.16,0.42,phase)*(1.0-smoothstep(0.42,0.68,phase));float glow=A*(head+0.22*tail);vec3 color=min(vc*(0.72+0.65*glow)+vec3(0.23*glow),vec3(1.0));gl_FragColor=vec4(color,0.52+0.4*glow+0.25*(1.0-A));}`);
+ PR.line=prog(`attribute vec3 a,b,a2,b2,c,c2;attribute vec2 info;uniform mat4 M;uniform vec2 R;uniform float W,F;varying vec3 vc;varying float vs,edge;
+ void main(){vec4 p=M*vec4(mix(a,a2,F),1.);vec4 q=M*vec4(mix(b,b2,F),1.);
+ vec2 d=(q.xy/q.w-p.xy/p.w)*R;d/=max(.00001,length(d));edge=info.x;vs=info.y;vc=mix(c,c2,F);
+ p.xy+=vec2(-d.y,d.x)*edge*W/R*p.w;gl_Position=p;}`,`precision mediump float;varying vec3 vc;varying float vs,edge;uniform float T,A;
+ void main(){float wave=.5+.5*cos(6.283*(vs*.31-T));float light=mix(.5,wave*wave,A);
+ gl_FragColor=vec4(mix(vc,vec3(.85,.96,1.),.16+.25*light),(.22+.47*light)*(1.-smoothstep(.36,1.,abs(edge))));}`);
  PR.gr=prog(`attribute vec2 q;uniform mat4 M;varying vec2 w;void main(){w=q;gl_Position=M*vec4(q.x,0.0,q.y,1.0);}`,
  `precision mediump float;varying vec2 w;uniform float T;void main(){vec3 bg=vec3(0.043,0.05,0.067);vec2 f=fract(w);float gr=max(step(0.975,f.x),step(0.975,f.y));vec3 c=vec3(0.075,0.085,0.105)+gr*0.045;float belt=step(abs(w.y),1.15)*step(-2.0,w.x)*step(w.x,8.0);float st=step(0.5,fract((w.x-T*1.6)/0.8));c=mix(c,vec3(0.12,0.13,0.16)+st*0.025,belt);float sh=exp(-pow(abs((w.x-2.55)/2.7),4.0)-pow(abs(w.y/0.95),4.0));c*=1.0-0.6*sh;float fo=exp(-0.01*dot(w-vec2(3.0,0.0),w-vec2(3.0,0.0)));gl_FragColor=vec4(mix(bg,c,fo),1.0);}`);
  BUF.gr=g.createBuffer();g.bindBuffer(g.ARRAY_BUFFER,BUF.gr);g.bufferData(g.ARRAY_BUFFER,new Float32Array([-8,-10,18,-10,18,10,-8,-10,18,10,-8,10]),g.STATIC_DRAW);
@@ -1007,19 +1029,49 @@ function uploadMesh(fast){
  g.bindBuffer(g.ARRAY_BUFFER,BUF.mv);g.bufferData(g.ARRAY_BUFFER,v,g.DYNAMIC_DRAW);
  g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,BUF.mi);g.bufferData(g.ELEMENT_ARRAY_BUFFER,ix,g.DYNAMIC_DRAW);meshCount=ix.length;
 }
+// Keep a matching pair of paths for each emitter so changing mode never restarts a trail.
 function uploadLines(){
- const g=gl3;let nv=0,ni=0;for(const L of LINES){const n=L.P.length/3;nv+=2*n;ni+=6*(n-1)}
- const v=new Float32Array(nv*11),ix=new Uint32Array(ni);let o=0,q=0,base=0;
- for(const L of LINES){const P=L.P,n=P.length/3;let s=L.s0;
-  for(let k=0;k<n;k++){const j=k<n-1?k+1:k-1,sgn=k<n-1?1:-1,bx=k<n-1?P[3*j]:2*P[3*k]-P[3*j],by=k<n-1?P[3*j+1]:2*P[3*k+1]-P[3*j+1],bz=k<n-1?P[3*j+2]:2*P[3*k+2]-P[3*j+2],c=lineCol(L.sp[k]);
-   for(const sd of [-1,1]){v[o++]=P[3*k];v[o++]=P[3*k+1];v[o++]=P[3*k+2];v[o++]=bx;v[o++]=by;v[o++]=bz;v[o++]=sd*(sgn>0?1:-1);v[o++]=c[0];v[o++]=c[1];v[o++]=c[2];v[o++]=s}
-   s+=DS/Math.max(0.05,L.sp[k])}
-  for(let k=0;k<n-1;k++){const a=base+2*k;ix[q++]=a;ix[q++]=a+1;ix[q++]=a+2;ix[q++]=a+1;ix[q++]=a+3;ix[q++]=a+2}base+=2*n}
- g.bindBuffer(g.ARRAY_BUFFER,BUF.lv);g.bufferData(g.ARRAY_BUFFER,v,g.DYNAMIC_DRAW);
- g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,BUF.li);g.bufferData(g.ELEMENT_ARRAY_BUFFER,ix,g.DYNAMIC_DRAW);lineCount=ni;
+ const vertices=[],indices=[];
+ for(const [id,[corner,straight]] of LINES.entries()){
+  const count=Math.min(corner.sp.length,straight.sp.length);
+  let phase=id*.618;
+  for(let k=0;k<count;k++){
+   const i=k*3,j=Math.min(k+1,count-1)*3,base=vertices.length/20;
+   for(const side of [-1,1]){
+    for(const path of [corner,straight]){
+     const p=path.P;
+     vertices.push(p[i],p[i+1],p[i+2]);
+     for(let axis=0;axis<3;axis++)vertices.push(k===count-1?2*p[i+axis]-p[i-3+axis]:p[j+axis]);
+    }
+    vertices.push(...lineCol(corner.sp[k]),...lineCol(straight.sp[k]),side,phase);
+   }
+   if(k<count-1)indices.push(base,base+1,base+2,base+1,base+3,base+2);
+   phase+=DS/Math.max(.1,(corner.sp[k]+straight.sp[k])*.5);
+  }
+ }
+ const g=gl3;g.bindBuffer(g.ARRAY_BUFFER,BUF.lv);g.bufferData(g.ARRAY_BUFFER,new Float32Array(vertices),g.STATIC_DRAW);
+ g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,BUF.li);g.bufferData(g.ELEMENT_ARRAY_BUFFER,new Uint32Array(indices),g.STATIC_DRAW);lineCount=indices.length;
 }
-let D3=null,demoT=0,prev3=0;
-function rebuild3(){buildModel(D3||target3());uploadMesh(false);LINES=[];SEEDQ=seeds();lineDirty=true;stats3()}
+let D3=null,demoT=0,prev3=0,flowKey='',fields=[],pending=[];
+function useField(f){[SRC,SEG,DB,SOL,WH,RH]=f}
+function rebuild3(){
+ const p=target3(),key=[p.fw,p.rw,p.rh,p.rr,p.sys,T3.rake].join();
+ if(key!==flowKey){
+  fields=[0,1].map(f=>{buildModel({...p,f});return [SRC,SEG,DB,SOL,WH,RH]});
+  SEEDQ=seeds();pending=[];flowKey=key;
+ }
+ buildModel(D3);uploadMesh(false);stats3();
+}
+function moveFlaps(p){
+ const front=frontFlaps(p.fw,p.f,p.rh),rear=rearFlap(p.sys,p.rw,p.f);
+ for(const [idx,flap,width] of [[5,front[0],.92],[6,front[1],.9],[8,rear,.5]]){
+  const moved=extrudeMesh(foil(flap.c,flap.a,flap.lx,flap.ly,.07,.4,.12,22),-width,width,MESH[idx].c.slice(0,3));
+  const {v}=meshArrays([moved],false);
+  const offset=MESH.slice(0,idx).reduce((n,item)=>n+item.p.length/3,0);
+  for(let i=0;i<v.length/9;i++)v.set(ST3.cols.subarray((offset+i)*3,(offset+i+1)*3),i*9+6);
+  gl3.bindBuffer(gl3.ARRAY_BUFFER,BUF.mv);gl3.bufferSubData(gl3.ARRAY_BUFFER,offset*36,v);
+ }
+}
 function stats3(){
  const A=aero(S,S.am),Q=q(250),o=[0,0,0];
  $('#g3Df').textContent=nf(Q*A.cz/1000,1)+' kN';$('#g3Dr').textContent=nf(Q*A.cd/1000,2)+' kN';$('#g3Bal').textContent=nf(A.bal*100,1)+'%';
@@ -1038,11 +1090,17 @@ function frame3(ts){
  {const tg=target3();if(!D3){D3=Object.assign({},tg);need3=true}if(D3.sys!==tg.sys){D3.sys=tg.sys;need3=true;buildModel(D3);uploadMesh(true)}let mv=false;
   {const dd=tg.f-D3.f;if(Math.abs(dd)>0.0005){D3.f+=dd*(1-Math.exp(-dt*4.8));mv=true}else D3.f=tg.f}
   for(const k of ['fw','rw','rh','rr']){const e=k==='rh'||k==='rr'?2e-5:0.015,dd=tg[k]-D3[k];if(Math.abs(dd)>e){D3[k]+=dd*(1-Math.exp(-dt*7));mv=true}else D3[k]=tg[k]}
-  if(mv){buildModel(D3);uploadMesh(true);need3=true;last3=ts}
+  if(mv&&meshCount){moveFlaps(D3);need3=true;last3=ts}
   else if(need3&&ts-last3>90){need3=false;rebuild3()}}
- if(SEEDQ.length){const t0=performance.now();while(SEEDQ.length&&performance.now()-t0<12){const s=SEEDQ.shift(),L=trace(s[0],s[1],s[2]);if(L.P.length>9){L.s0=Math.random()*4;LINES.push(L)}}lineDirty=true;$('#g3Busy').style.display=SEEDQ.length?'block':'none'}
+ if(SEEDQ.length){
+  const seed=SEEDQ.shift(),current=[SRC,SEG,DB,SOL,WH,RH];
+  pending.push(fields.map(field=>{useField(field);return trace(...seed)}));
+  useField(current);
+  if(!SEEDQ.length||(!LINES.length&&pending.length===4)){LINES=pending.slice();lineDirty=true}
+  $('#g3Busy').style.display=SEEDQ.length?'block':'none';
+ }
  if(lineDirty){uploadLines();lineDirty=false}
- if(T3.auto)goal.yaw+=0.0016;
+ if(T3.auto&&!reduce)goal.yaw+=dt*.07;
  for(let k=0;k<3;k++)TGT[k]+=(TG2[k]-TGT[k])*0.12;
  cam.yaw+=(goal.yaw-cam.yaw)*0.12;cam.pitch+=(goal.pitch-cam.pitch)*0.12;cam.dist+=(goal.dist-cam.dist)*0.12;
  const g=gl3,cv=g.canvas,W=cv.width,H=cv.height,cp=Math.cos(cam.pitch),dd=cam.dist*Math.max(1,1.6*H/W),E=[TGT[0]+dd*cp*Math.cos(cam.yaw),TGT[1]+dd*Math.sin(cam.pitch),TGT[2]+dd*cp*Math.sin(cam.yaw)];
@@ -1051,15 +1109,15 @@ function frame3(ts){
  let P=PR.gr;g.useProgram(P.p);g.uniformMatrix4fv(P.un.M,false,MVP);g.uniform1f(P.un.T,reduce?0:t);g.bindBuffer(g.ARRAY_BUFFER,BUF.gr);bindAttrs(P,[['q',2]],2);g.drawArrays(g.TRIANGLES,0,6);disableAttrs(P);
  if(meshCount){P=PR.mesh;g.useProgram(P.p);g.uniformMatrix4fv(P.un.M,false,MVP);g.uniform3fv(P.un.E,E);g.bindBuffer(g.ARRAY_BUFFER,BUF.mv);g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,BUF.mi);bindAttrs(P,[['p',3],['n',3],['c',3]],9);g.drawElements(g.TRIANGLES,meshCount,g.UNSIGNED_INT,0);disableAttrs(P)}
  if(lineCount){P=PR.line;g.useProgram(P.p);g.enable(g.BLEND);g.blendFunc(g.SRC_ALPHA,g.ONE_MINUS_SRC_ALPHA);g.depthMask(false);
-  g.uniformMatrix4fv(P.un.M,false,MVP);g.uniform2f(P.un.R,W,H);g.uniform1f(P.un.W,1.9*Math.min(2,devicePixelRatio||1));g.uniform1f(P.un.T,t*0.8);g.uniform1f(P.un.A,T3.anim&&!reduce?1:0);
-  g.bindBuffer(g.ARRAY_BUFFER,BUF.lv);g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,BUF.li);bindAttrs(P,[['a',3],['b',3],['sd',1],['c',3],['s',1]],11);g.drawElements(g.TRIANGLES,lineCount,g.UNSIGNED_INT,0);disableAttrs(P);g.depthMask(true)}
+  g.uniformMatrix4fv(P.un.M,false,MVP);g.uniform1f(P.un.F,D3.f);g.uniform2f(P.un.R,W,H);g.uniform1f(P.un.W,1.9*Math.min(2,devicePixelRatio||1));g.uniform1f(P.un.T,t*0.8);g.uniform1f(P.un.A,T3.anim&&!reduce?1:0);
+  g.bindBuffer(g.ARRAY_BUFFER,BUF.lv);g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,BUF.li);bindAttrs(P,[['a',3],['b',3],['a2',3],['b2',3],['c',3],['c2',3],['info',2]],20);g.drawElements(g.TRIANGLES,lineCount,g.UNSIGNED_INT,0);disableAttrs(P);g.depthMask(true)}
 }
-function legend3(){$('#lg1').style.background=jetCss;$('#lg2').style.background=jetCss;$('#lg1l').textContent=T3.lc==='speed'?'Garis: lambat':'Garis: tekanan rendah';$('#lg1r').textContent=T3.lc==='speed'?'cepat':'tinggi'}
+function legend3(){$('#lg2').parentElement.style.display=T3.cc==='pres'?'flex':'none';$('#lg1').style.background=jetCss;$('#lg2').style.background=jetCss;$('#lg1l').textContent=T3.lc==='speed'?'Garis: lambat':'Garis: tekanan rendah';$('#lg1r').textContent=T3.lc==='speed'?'cepat':'tinggi'}
 const mark3=()=>{need3=true;key3=[S.fw,S.rw,S.rhF,S.rhR,S.am,S.sys].join();save()};
 const g3Upd=[
  seg('#g3Rake',()=>T3.rake,v=>{T3.rake=v;mark3()}),
  seg('#g3Lc',()=>T3.lc,v=>{T3.lc=v;legend3();lineDirty=true;save()}),
- seg('#g3Cc',()=>T3.cc,v=>{T3.cc=v;if(gl3&&MESH.length)uploadMesh();save()}),
+ seg('#g3Cc',()=>T3.cc,v=>{T3.cc=v;legend3();if(gl3&&MESH.length)uploadMesh();save()}),
  seg('#g3Mode',()=>S.am,v=>{S.am=v;mark3()}),
  rng('#g3Fw','#og3Fw',()=>S.fw,v=>{S.fw=v;mark3()},v=>v+'°'),
  rng('#g3Rw','#og3Rw',()=>S.rw,v=>{S.rw=v;mark3()},v=>v+'°'),
