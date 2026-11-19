@@ -145,17 +145,16 @@ body{background:var(--bg)}
 #modules a[aria-current=page]{background:#322228;color:white;box-shadow:inset 3px 0 #ff4642}
 #modules a[aria-current=page] svg{color:#ff6b63}
 main,footer{grid-column:2}.page-heading{padding:22px 0 16px}.page-heading small{display:block;color:var(--mute);margin-bottom:3px}.page-heading h1{font-size:clamp(28px,3vw,43px);line-height:1.06}
-.menu-toggle{display:none}.display-options{border:1px solid var(--line);border-radius:12px;padding:0 16px;background:var(--panel)}.display-options[open]{padding-bottom:12px}
+.display-options{border:1px solid var(--line);border-radius:12px;padding:0 16px;background:var(--panel)}.display-options[open]{padding-bottom:12px}
 #parts{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:3px}#parts button{font-size:14px;line-height:1.15;padding:8px 4px}#parts button[aria-pressed=true]{background:#cb302d;color:white}
 @media(max-width:1000px){.wrap{grid-template-columns:174px minmax(0,1fr)}.rail{padding-inline:10px}.garage{grid-template-columns:minmax(0,1fr) 240px}}
-@media(max-width:780px){.wrap{display:block;padding:0 14px}.rail{position:sticky;z-index:5;height:auto;overflow:visible;display:flex;align-items:center;justify-content:space-between;gap:0;margin:0 -14px;padding:10px 16px;border:0;border-bottom:1px solid #303743}.brand b{font-size:23px;padding:6px 8px}.brand span{font-size:13px}.menu-toggle{display:flex;gap:10px;align-items:center;min-height:44px;background:#222934;color:white;border:1px solid #404957;border-radius:7px;padding:0 14px;font:600 15px system-ui}#modules{display:none;position:absolute;inset:100% 0 auto;background:#11151c;max-height:70dvh;overflow:auto;padding:16px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:15px;border-bottom:1px solid #424956;border-radius:0 0 12px 12px}.rail.open #modules{display:grid}.page-heading{padding:14px 0 10px}.garage{grid-template-columns:1fr}}
+@media(min-width:1100px){.garage{grid-template-columns:minmax(0,1fr) clamp(265px,21vw,350px)}.garage #gl{height:clamp(420px,62vh,800px)}.inspector{padding:22px;gap:22px}.part-controls{padding-block:12px;border-block:1px solid var(--line)}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header class="rail">
  <a class="brand" href="#tunnel3d" aria-label="F1 Engineering Lab, buka garasi"><b>F1</b><span>Engineering<br>Lab</span></a>
- <button class="menu-toggle" aria-expanded="false" aria-controls="modules">Menu <span aria-hidden="true">☰</span></button>
  <nav id="modules" aria-label="Navigasi utama"><div class="nav-group"><h2>Mobil</h2><a href="#tunnel3d"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 14l2-5 3-1h8l3 1 2 5v4h-3v-2H6v2H3z M6 13h3m6 0h3"/></svg><span>Garasi 3D</span></a><a href="#power"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M13 2 5 13h6l-1 9 9-13h-7z"/></svg><span>Power unit</span></a></div><div class="nav-group"><h2>Aerodinamika</h2><a href="#tunnel"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M2 7h12c5 0 5-5 2-5 M2 12h17c4 0 4 5 1 5 M2 17h8c4 0 4 5 1 5"/></svg><span>Terowongan 2D</span></a><a href="#aero"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 3v17h18 M6 15l4-5 4 2 6-7"/></svg><span>Analisis aero</span></a></div><div class="nav-group"><h2>Lintasan</h2><a href="#track"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 8c0-3 3-5 6-4l11 4c3 1 2 5-1 5h-5l-3 6c-1 3-5 3-6 0z"/></svg><span>Replay 3D</span></a><a href="#lap"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M10 3h4 M12 3v3 M18 7l2-2 M12 10v4l3 1 M20 14a8 8 0 1 1-16 0 8 8 0 1 1 16 0"/></svg><span>Simulasi lap</span></a></div></nav>
 </header>
 <main><div class="page-heading"><small id="moduleGroup">Mobil</small><h1 id="moduleName" tabindex="-1">Garasi 3D</h1></div>
@@ -403,15 +402,6 @@ function frontFlaps(fw,f,rh){return [[0.18,0.21,0.115,fw*1.2+6,0],[0.15,0.36,0.1
 
 /* ---------- tabs ---------- */
 const views=['tunnel3d','track','tunnel','aero','power','lap'];let cur='tunnel3d',key3='';
-const rail=document.querySelector('.rail'),menuToggle=document.querySelector('.menu-toggle');
-function toggleMenu(open){
- rail.classList.toggle('open',open);
- menuToggle.setAttribute('aria-expanded',String(open));
-}
-menuToggle.addEventListener('click',()=>toggleMenu(!rail.classList.contains('open')));
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&rail.classList.contains('open')){toggleMenu(false);menuToggle.focus()}});
-rail.addEventListener('click',e=>{if(e.target.closest('a')){toggleMenu(false);if(menuToggle.offsetWidth)requestAnimationFrame(()=>document.querySelector('#moduleName').focus({preventScroll:true}))}});
-document.addEventListener('pointerdown',e=>{if(!rail.contains(e.target))toggleMenu(false)});
 function route(){
  const h=location.hash.slice(1);cur=views.includes(h)?h:'tunnel3d';
  $$('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+cur));
@@ -420,7 +410,6 @@ function route(){
  document.querySelector('#moduleName').textContent=active.textContent;
  document.querySelector('#moduleGroup').textContent=active.parentElement.querySelector('h2').textContent;
  document.title=active.textContent+' · F1 Engineering Lab';
- toggleMenu(false);
  if(cur==='aero'){aUpd.forEach(f=>f());drawAero()}
  if(cur==='tunnel3d'){g3Upd.forEach(f=>f());const k=[S.fw,S.rw,S.rhF,S.rhR,S.am,S.sys].join();if(k!==key3){key3=k;need3=true}}
  if(cur==='lap')lUpd.forEach(f=>f());
