@@ -127,6 +127,10 @@ footer a{color:inherit}
 @media(max-width:860px){.g2,.g2e{grid-template-columns:minmax(0,1fr)}dl{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:600px){.stat:last-child:nth-child(odd){grid-column:1/-1}nav{width:100%}nav a{flex:1 1 auto;justify-content:center;padding:8px 10px}.leg i{width:60px}.fig{min-height:240px}.fig.t{min-height:300px}.row{grid-template-columns:6.5em minmax(0,1fr) 5em}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+.garage{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,310px);gap:12px;margin-bottom:12px}
+.inspector{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:20px}.inspector .seg{background:var(--bg)}.inspector h2{font-size:24px;margin:0}.part-controls>div+div{margin-top:14px}.part-controls label{display:flex;justify-content:space-between}.part-controls output{font-weight:700;font-variant-numeric:tabular-nums;color:var(--blue)}.display-options summary{cursor:pointer;font-weight:700;padding:12px 0}.display-options .ctl{padding-block:12px}
+@media(max-width:780px){.garage{grid-template-columns:1fr}.garage #gl{height:clamp(220px,37svh,340px)}.inspector{padding:14px;gap:10px}.inspector h2{font-size:20px}}
+.pick-points{position:absolute;inset:0;pointer-events:none;overflow:hidden}.pick-points button{position:absolute;top:0;left:0;pointer-events:auto;background:#101824df;border:1px solid #99b4d1;color:#fff;border-radius:12px;padding:4px 9px;cursor:pointer;font:600 12px system-ui}.pick-points button[aria-pressed=true]{background:#f6f8ff;color:#19202a}.pick-points button:focus-visible{outline:3px solid #83baff}
 </style>
 </head>
 <body>
@@ -135,48 +139,33 @@ footer a{color:inherit}
 <header>
  <div>
   <h1>F1 Engineering Lab</h1>
-  <p class="sub">Main-main ala insinyur tim: tiup angin ke mobil 2026, atur sayap dan ride height, hitung power unit 50/50, lalu lihat efeknya ke lap time.</p>
+
  </div>
  <nav aria-label="Bagian">
-  <a href="#tunnel3d">Tunnel 3D</a><a href="#track">Track 3D</a><a href="#tunnel">Tunnel 2D</a><a href="#aero">Setup aero</a><a href="#power">Power unit</a><a href="#lap">Lap sim</a>
+  <a href="#tunnel3d">Garasi 3D</a><a href="#track">Track 3D</a><a href="#tunnel">Tunnel 2D</a><a href="#aero">Analisis aero</a><a href="#power">Power unit</a><a href="#lap">Lap sim</a>
  </nav>
 </header>
 <main>
 
-<section class="view" id="v-tunnel3d">
- <div class="tun">
+<section class="view" id="v-tunnel3d"><div class="garage"> <div class="tun">
   <canvas id="gl" aria-label="Wind tunnel 3D: mobil F1 2026 dengan garis aliran udara berwarna"></canvas>
   <div class="leg3"><div><span id="lg1l">Garis: lambat</span><i id="lg1"></i><span id="lg1r">cepat</span></div><div><span>Mobil: tekanan rendah</span><i id="lg2"></i><span>tinggi</span></div></div>
+  <div class="pick-points" aria-label="Pilih bagian mobil">
+   <button data-pick="front" aria-label="Atur sayap depan">Depan</button>
+   <button data-pick="body" aria-label="Atur bodi">Bodi</button>
+   <button data-pick="rear" aria-label="Atur sayap belakang">Belakang</button>
+  </div>
   <div class="hint">Seret buat muter · scroll atau cubit buat zoom</div>
   <div class="busy" id="g3Busy">Menghitung garis aliran…</div>
   <div class="msg" id="gmsg"></div>
  </div>
- <p class="cap">Garis = jalur udara. Warna mengikuti skala CFD: biru lambat atau tekanan rendah, hijau normal, merah cepat atau tekanan tinggi. Ini model aliran 3D perkiraan (potential flow untuk bodi dan ban, vorteks tapal kuda untuk sayap dan floor yang kekuatannya diambil dari tab Setup aero, pantulan lantai untuk ground effect, plus wake bergolak). Bukan CFD penuh, tapi polanya sama dengan gambar CFD tim. Yang dihitung CFD beneran ada di tab Tunnel 2D.</p>
- <div class="stats">
+<aside class="inspector"><h2>Atur mobil</h2><div class="seg" id="parts"><button data-v="front">Sayap depan</button><button data-v="body">Bodi</button><button data-v="rear">Sayap belakang</button></div><div class="part-controls" data-panel="front"><div><label for="g3Fw">Flap sayap depan <output id="og3Fw"></output></label><input type="range" id="g3Fw" min="2" max="24" step="1"></div></div><div class="part-controls" data-panel="body" hidden><div><label for="g3Rh">Tinggi bodi depan <output id="og3Rh"></output></label><input type="range" id="g3Rh" min="12" max="60" step="1"></div><div><label for="g3RearHeight">Tinggi bodi belakang <output id="oRearHeight"></output></label><input type="range" id="g3RearHeight" min="40" max="120" step="1"></div></div><div class="part-controls" data-panel="rear" hidden><div><label for="g3Rw">Sudut sayap belakang <output id="og3Rw"></output></label><input type="range" id="g3Rw" min="1" max="30" step="1"></div><div><span class="lbl">Sistem sayap belakang</span><div class="seg" id="g3Sys"><button data-v="std">Standar</button><button data-v="rb">Red Bull (Macarena)</button><button data-v="fe">Ferrari (Macarena)</button></div></div></div><div><span class="lbl">Active aero</span><div class="seg" id="g3Mode"><button data-v="corner">Corner Mode</button><button data-v="straight">Straight Mode</button></div></div></aside></div> <div class="stats">
   <div class="stat hot"><b id="g3Df">–</b><span>Downforce di 250 km/j</span></div>
   <div class="stat"><b id="g3Dr">–</b><span>Drag di 250 km/j</span></div>
   <div class="stat"><b id="g3Bal">–</b><span>Balance depan</span></div>
   <div class="stat el"><b id="g3Uf">–</b><span>Udara di bawah floor vs mobil</span></div>
  </div>
- <div class="panel" style="margin-bottom:18px"><h3 id="g3PH">Downforce per bagian</h3><div class="rows" id="g3Parts"></div><p class="note" id="g3PN" style="margin:10px 0 0"></p></div>
- <div class="ctl">
-  <div><span class="lbl">Garis udara dari</span><div class="seg" id="g3Rake"><button data-v="full">Semua</button><button data-v="fw">Sayap depan</button><button data-v="rw">Sayap belakang</button><button data-v="floor">Floor</button><button data-v="tyre">Ban</button></div></div>
-  <div><span class="lbl">Kamera</span><div class="seg" id="g3View"><button data-v="q">3/4</button><button data-v="side">Samping</button><button data-v="top">Atas</button><button data-v="rear">Belakang</button><button data-v="low">Rendah</button><button data-v="rwing">Sayap belakang</button><button data-v="fwing">Sayap depan</button></div></div>
-  <div><span class="lbl">Warna garis</span><div class="seg" id="g3Lc"><button data-v="speed">Kecepatan</button><button data-v="pres">Tekanan</button></div></div>
-  <div><span class="lbl">Warna mobil</span><div class="seg" id="g3Cc"><button data-v="pres">Peta tekanan</button><button data-v="livery">Livery</button></div></div>
-  <div><span class="lbl">Sistem sayap belakang</span><div class="seg" id="g3Sys"><button data-v="std">Standar</button><button data-v="rb">Red Bull (Macarena)</button><button data-v="fe">Ferrari (Macarena)</button></div></div>
-  <div><span class="lbl">Active aero</span><div class="seg" id="g3Mode"><button data-v="corner">Corner Mode</button><button data-v="straight">Straight Mode</button></div></div>
-  <div><label for="g3Fw">Flap sayap depan <output id="og3Fw"></output></label><input type="range" id="g3Fw" min="2" max="24" step="1"></div>
-  <div><label for="g3Rw">Sudut sayap belakang <output id="og3Rw"></output></label><input type="range" id="g3Rw" min="1" max="30" step="1"></div>
-  <div><label for="g3Rh">Ride height depan <output id="og3Rh"></output></label><input type="range" id="g3Rh" min="12" max="60" step="1"></div>
-  <div><span class="lbl">Tampilan</span><div class="btns"><button class="btn" id="g3Auto">Putar otomatis</button><button class="btn" id="g3Anim">Animasi aliran</button><button class="btn" id="g3Demo">Demo active aero</button></div></div>
- </div>
- <div class="cols" style="margin-top:22px">
-  <div><h3>Baca warnanya</h3><p class="note">Merah di ujung hidung, ban depan, dan permukaan atas sayap: udara "nabrak" dan tekanannya naik. Biru di bawah sayap dan floor: udara ngebut, tekanannya turun. Selisih atas dan bawah itulah downforce.</p></div>
-  <div><h3>Macarena wing</h3><p class="note">Di Straight Mode, flap atas sayap belakang tidak cuma rebah. Red Bull memutarnya ke atas lewat belakang sekitar 110–120° pakai aktuator di tengah, sampai ujungnya lebih tinggi dari endplate. Ferrari memutarnya dari depan ke belakang sampai flap terbalik. Pilih sistemnya, lalu nyalakan "Demo active aero".</p></div>
-  <div><h3>Pusaran ujung sayap</h3><p class="note">Pilih "Sayap depan" atau "Sayap belakang": garis di ujung sayap muter jadi spiral. Itu tip vortex, efek samping dari beda tekanan. Naikkan sudut sayap dan pusarannya makin kencang.</p></div>
-  <div><h3>Dirty air</h3><p class="note">Pakai kamera Belakang. Garis di belakang mobil dan ban jadi lambat (biru) dan berantakan. Mobil yang ngikutin dapat udara jelek ini, jadi downforce-nya berkurang.</p></div>
- </div>
+<details class="display-options"><summary>Kamera dan aliran udara</summary><div class="ctl"><div><span class="lbl">Kamera</span><div class="seg" id="g3View"><button data-v="q">3/4</button><button data-v="side">Samping</button><button data-v="top">Atas</button><button data-v="rear">Belakang</button><button data-v="low">Rendah</button><button data-v="rwing">Sayap belakang</button><button data-v="fwing">Sayap depan</button></div></div><div><span class="lbl">Garis udara dari</span><div class="seg" id="g3Rake"><button data-v="full">Semua</button><button data-v="fw">Sayap depan</button><button data-v="rw">Sayap belakang</button><button data-v="floor">Floor</button><button data-v="tyre">Ban</button></div></div><div><span class="lbl">Warna garis</span><div class="seg" id="g3Lc"><button data-v="speed">Kecepatan</button><button data-v="pres">Tekanan</button></div></div><div><span class="lbl">Warna mobil</span><div class="seg" id="g3Cc"><button data-v="pres">Peta tekanan</button><button data-v="livery">Livery</button></div></div><div><span class="lbl">Tampilan</span><div class="btns"><button class="btn" id="g3Auto">Putar otomatis</button><button class="btn" id="g3Anim">Animasi aliran</button><button class="btn" id="g3Demo">Demo active aero</button></div></div></div></details>
 </section>
 
 <section class="view" id="v-track">
@@ -200,7 +189,6 @@ footer a{color:inherit}
   <div><label for="tLapN">Lap dalam stint <output id="otLapN"></output></label><input type="range" id="tLapN" min="1" max="40" step="1"></div>
   <div><span class="lbl">Kamera</span><div class="seg" id="tCam"><button data-v="chase">Belakang</button><button data-v="onboard">Onboard</button><button data-v="tv">TV</button><button data-v="heli">Heli</button></div></div>
   <div><span class="lbl">Kecepatan replay</span><div class="seg" id="tSpd"><button data-v="0.5">0,5×</button><button data-v="1">1×</button><button data-v="2">2×</button><button data-v="4">4×</button></div></div>
-  <div><span class="lbl">Sistem sayap belakang</span><div class="seg" id="tSys"><button data-v="std">Standar</button><button data-v="rb">Red Bull (Macarena)</button><button data-v="fe">Ferrari (Macarena)</button></div></div>
   <div><span class="lbl">Warna mobil</span><div class="seg" id="tCol"><button data-v="livery">Livery</button><button data-v="pres">Peta tekanan</button></div></div>
   <div><span class="lbl">Replay</span><div class="btns"><button class="btn" id="tRun">Jeda</button><button class="btn" id="tRestart">Ulang dari start</button></div></div>
  </div>
@@ -260,13 +248,7 @@ footer a{color:inherit}
   </div>
  </div>
  <div class="ctl" style="margin-bottom:24px">
-  <div><span class="lbl">Sistem sayap belakang</span><div class="seg" id="aSys"><button data-v="std">Standar</button><button data-v="rb">Red Bull (Macarena)</button><button data-v="fe">Ferrari (Macarena)</button></div></div>
-  <div><span class="lbl">Active aero</span><div class="seg" id="aMode"><button data-v="corner">Corner Mode</button><button data-v="straight">Straight Mode</button></div></div>
   <div><label for="aV">Kecepatan <output id="oV"></output></label><input type="range" id="aV" min="80" max="350" step="5"></div>
-  <div><label for="aFw">Flap sayap depan <output id="oaFw"></output></label><input type="range" id="aFw" min="2" max="24" step="1"></div>
-  <div><label for="aRw">Sudut sayap belakang <output id="oaRw"></output></label><input type="range" id="aRw" min="1" max="30" step="1"></div>
-  <div><label for="aRhF">Ride height depan <output id="oaRhF"></output></label><input type="range" id="aRhF" min="12" max="60" step="1"></div>
-  <div><label for="aRhR">Ride height belakang <output id="oaRhR"></output></label><input type="range" id="aRhR" min="40" max="120" step="1"></div>
  </div>
  <div class="g2e">
   <div><div class="chh"><b>Downforce vs kecepatan (kN)</b><span><span class="key"><i style="background:var(--red)"></i>Corner</span> <span class="key"><i style="background:var(--grey)"></i>Straight</span></span></div><div class="fig s" id="fDf"><svg></svg></div></div>
@@ -639,14 +621,7 @@ function drawAero(){
  $('#aTop').innerHTML=tm.map(t=>`<div class="row"><span>${t[0]}</span><span class="bar"><i style="width:${((t[1]-250)/120*100).toFixed(1)}%;background:${t[2]}"></i></span><span class="v">${Math.round(t[1])} km/j</span></div>`).join('');
  drawCar();drawAeroCharts();save();
 }
-const aUpd=[
- seg('#aMode',()=>S.am,v=>{S.am=v;drawAero()}),
- seg('#aSys',()=>S.sys,v=>{S.sys=v;drawAero()}),
- rng('#aV','#oV',()=>S.v,v=>{S.v=v;drawAero()},v=>v+' km/j'),
- rng('#aFw','#oaFw',()=>S.fw,v=>{S.fw=v;drawAero()},v=>v+'°'),
- rng('#aRw','#oaRw',()=>S.rw,v=>{S.rw=v;drawAero()},v=>v+'°'),
- rng('#aRhF','#oaRhF',()=>S.rhF,v=>{S.rhF=v;drawAero()},v=>v+' mm'),
- rng('#aRhR','#oaRhR',()=>S.rhR,v=>{S.rhR=v;drawAero()},v=>v+' mm')];
+const aUpd=[rng('#aV','#oV',()=>S.v,v=>{S.v=v;drawAero()},v=>v+' km/j')];
 new ResizeObserver(()=>{if(cur==='aero'){drawCar();drawAeroCharts()}}).observe($('#v-aero'));
 
 /* ================= POWER TAB ================= */
@@ -890,6 +865,7 @@ function buildModel(p){
  M.push(extrudeMesh(rect(4.94,5.0,0.34,0.8),-0.02,0.02,CARB));
  for(let k=0;k<6;k++){const x=1.7+k*0.48;hs.push([x,fy(x)+0.012,0.7,flG/6])}
  WH=[[0.95,0.36,0.79,0.36,0.19],[0.95,0.36,-0.79,0.36,0.19],[4.35,0.36,0.77,0.36,0.22],[4.35,0.36,-0.77,0.36,0.22]];
+ const wheelStart=M.length;
  WH.forEach(([x,y,z,r,hw])=>{
   const face=Math.sign(z), rings=[[-1,.84],[-.97,.94],[-.84,.995],[-.64,1],[.64,1],[.84,.995],[.97,.94],[1,.84]];
   const tyre=loftMesh(rings.map(([ax,rad])=>[ax*hw,r*rad,-r*rad,r*rad,2]),48,TYRE,31);
@@ -903,6 +879,7 @@ function buildModel(p){
   }
   sol.push(cylSdf(x,y,z,r,hw));
  });
+ const wheelEnd=M.length;
  for(const sg of [-1,1]){
   M.push(beamMesh([0.8,0.47,sg*0.16],[0.95,0.48,sg*0.62],0.018,DARK),beamMesh([1.05,0.2,sg*0.14],[0.95,0.24,sg*0.62],0.018,DARK),
    beamMesh([4.15,0.45,sg*0.14],[4.35,0.46,sg*0.57],0.018,DARK),beamMesh([4.3,0.18,sg*0.14],[4.35,0.22,sg*0.57],0.018,DARK));
@@ -925,6 +902,17 @@ function buildModel(p){
  DB=Float64Array.from(WH.flatMap(([x,y,z,r])=>[x,y,z,r*r*r/2]));
  const sg=[];hs.forEach(([x,y,b,G])=>{const XF=x+30,P=[[XF,y,-b],[x,y,-b],[x,y,b],[XF,y,b]];
   for(let k=0;k<3;k++){const a=P[k],c=P[k+1];sg.push(a[0],a[1],a[2],c[0],c[1],c[2],G,a[0],-a[1],a[2],c[0],-c[1],c[2],-G)}});
+ // Front aero and floor already include their ride heights in the generated mesh.
+ M.forEach((mesh,index)=>{
+  const wheel=index>=wheelStart&&index<wheelEnd;
+  const builtIn=[2,4,5,6,10,12].includes(index);
+  mesh.rideWeight=wheel?0:1;
+  if(wheel||builtIn)return;
+  for(let k=0;k<mesh.p.length;k+=3){
+   const t=cl((mesh.p[k]-.95)/3.4,0,1);
+   mesh.p[k+1]+=(rh-.03)*(1-t)+(rr-.075)*t;
+  }
+ });
  SEG=Float64Array.from(sg);SOL=sol;MESH=M;
 }
 function vel(x,y,z,o){
@@ -990,7 +978,7 @@ function init3d(){
  const cv=$('#gl');gl3=cv.getContext('webgl',{antialias:true,alpha:false})||cv.getContext('experimental-webgl');
  if(!gl3||!gl3.getExtension('OES_element_index_uint'))throw new Error('WebGL tidak tersedia di browser ini');
  const g=gl3;
- PR.mesh=prog(`attribute vec3 p;attribute vec3 n;attribute vec3 c;uniform mat4 M;varying vec3 vn;varying vec3 vc;varying vec3 vp;void main(){vn=n;vc=c;vp=p;gl_Position=M*vec4(p,1.0);}`,
+ PR.mesh=prog(`attribute float rideWeight;uniform vec2 rideDelta;attribute vec3 p;attribute vec3 n;attribute vec3 c;uniform mat4 M;varying vec3 vn;varying vec3 vc;varying vec3 vp;void main(){vn=n;vc=c;vp=p;vp.y+=rideWeight*mix(rideDelta.x,rideDelta.y,clamp((p.x-.95)/3.4,0.,1.));gl_Position=M*vec4(vp,1.0);}`,
  `precision mediump float;varying vec3 vn;varying vec3 vc;varying vec3 vp;uniform vec3 E;void main(){vec3 N=normalize(vn);vec3 V=normalize(E-vp);if(dot(N,V)<0.0)N=-N;vec3 L=normalize(vec3(-0.35,0.9,0.3));float d=max(dot(N,L),0.0);vec3 H=normalize(L+V);float s=pow(max(dot(N,H),0.0),40.0);float r=pow(1.0-max(dot(N,V),0.0),3.0);gl_FragColor=vec4(vc*(0.34+0.76*d)+vec3(0.32*s)+vec3(0.1,0.12,0.16)*r,1.0);}`);
  PR.line=prog(`attribute vec3 a,b,a2,b2,c,c2;attribute vec2 info;uniform mat4 M;uniform vec2 R;uniform float W,F;varying vec3 vc;varying float vs,edge;
  void main(){vec4 p=M*vec4(mix(a,a2,F),1.);vec4 q=M*vec4(mix(b,b2,F),1.);
@@ -1024,10 +1012,17 @@ function meshArrays(list,pres,store,fast){
   for(const i of m.i)ix[q++]=i+base;base+=m.p.length/3}
  if(store&&!reuse)store.cols=cols;return {v,ix};
 }
+let meshRide=[.03,.075];
 function uploadMesh(fast){
  const g=gl3,{v,ix}=meshArrays(MESH,T3.cc==='pres',ST3,fast);
  g.bindBuffer(g.ARRAY_BUFFER,BUF.mv);g.bufferData(g.ARRAY_BUFFER,v,g.DYNAMIC_DRAW);
  g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,BUF.mi);g.bufferData(g.ELEMENT_ARRAY_BUFFER,ix,g.DYNAMIC_DRAW);meshCount=ix.length;
+ meshRide=[D3?.rh??.03,D3?.rr??.075];
+ BUF.ride??=g.createBuffer();
+ const weights=new Float32Array(v.length/9);
+ let offset=0;
+ for(const mesh of MESH){const end=offset+mesh.p.length/3;weights.fill(mesh.rideWeight,offset,end);offset=end}
+ g.bindBuffer(g.ARRAY_BUFFER,BUF.ride);g.bufferData(g.ARRAY_BUFFER,weights,g.STATIC_DRAW);
 }
 // Keep a matching pair of paths for each emitter so changing mode never restarts a trail.
 function uploadLines(){
@@ -1063,7 +1058,7 @@ function rebuild3(){
  buildModel(D3);uploadMesh(false);stats3();
 }
 function moveFlaps(p){
- const front=frontFlaps(p.fw,p.f,p.rh),rear=rearFlap(p.sys,p.rw,p.f);
+ const front=frontFlaps(p.fw,p.f,meshRide[0]),rear=rearFlap(p.sys,p.rw,p.f);
  for(const [idx,flap,width] of [[5,front[0],.92],[6,front[1],.9],[8,rear,.5]]){
   const moved=extrudeMesh(foil(flap.c,flap.a,flap.lx,flap.ly,.07,.4,.12,22),-width,width,MESH[idx].c.slice(0,3));
   const {v}=meshArrays([moved],false);
@@ -1076,12 +1071,7 @@ function stats3(){
  const A=aero(S,S.am),Q=q(250),o=[0,0,0];
  $('#g3Df').textContent=nf(Q*A.cz/1000,1)+' kN';$('#g3Dr').textContent=nf(Q*A.cd/1000,2)+' kN';$('#g3Bal').textContent=nf(A.bal*100,1)+'%';
  let mx=0;for(let x=1.8;x<4.2;x+=0.2){vel(x,RH*0.5,0,o);mx=Math.max(mx,Math.hypot(o[0],o[1],o[2]))}$('#g3Uf').textContent=nf(mx,1)+'×';
- const C=aero(S,'corner'),X=aero(S,'straight'),stn=S.am==='straight',mxp=Math.max(...C.parts.slice(0,3).map(p=>p[1]));
- $('#g3Parts').innerHTML=[0,1,2].map(k=>{const c=Q*C.parts[k][1]/1000,x=Q*X.parts[k][1]/1000,cv=stn?x:c;return `<div class="row"><span>${C.parts[k][0]}</span><span class="bar"><i style="width:${(cv/(Q*mxp/1000)*100).toFixed(1)}%;background:${stn?'var(--blue)':'var(--red)'}"></i></span><span class="v">${nf(cv,1)} kN</span></div>`}).join('');
- const dp=p=>{const a=p.a*Math.PI/180,mx2=p.x+p.c*0.5*Math.cos(a),my=p.y+p.c*0.5*Math.sin(a),nx=-Math.sin(a)*0.05,ny=Math.cos(a)*0.05;vel(mx2+nx,my+ny,0,o);const t=1-(o[0]*o[0]+o[1]*o[1]+o[2]*o[2]);vel(mx2-nx,my-ny,0,o);return t-(1-(o[0]*o[0]+o[1]*o[1]+o[2]*o[2]))};
- const dr=dp({x:FLAPS.r.lx,y:FLAPS.r.ly,c:FLAPS.r.c,a:FLAPS.r.a}),df=dp({x:FLAPS.f1.lx,y:FLAPS.f1.ly,c:FLAPS.f1.c,a:FLAPS.f1.a});
- $('#g3PH').textContent=(stn?'Straight Mode':'Corner Mode')+': downforce per bagian di 250 km/j';
- $('#g3PN').textContent=`Dibanding Corner Mode, Straight Mode memangkas drag ${nf((1-X.cd/C.cd)*100,0)}% dan downforce ${nf((1-X.cz/C.cz)*100,0)}%. Beda tekanan atas-bawah (ΔCp) sekarang: sayap depan ${nf(df,2)}, sayap belakang ${nf(dr,2)}. Makin besar ΔCp, makin kuat sayap menekan mobil.`;
+
 }
 function frame3(ts){
  requestAnimationFrame(frame3);if(cur!=='tunnel3d'||!gl3)return;
@@ -1105,9 +1095,10 @@ function frame3(ts){
  cam.yaw+=(goal.yaw-cam.yaw)*0.12;cam.pitch+=(goal.pitch-cam.pitch)*0.12;cam.dist+=(goal.dist-cam.dist)*0.12;
  const g=gl3,cv=g.canvas,W=cv.width,H=cv.height,cp=Math.cos(cam.pitch),dd=cam.dist*Math.max(1,1.6*H/W),E=[TGT[0]+dd*cp*Math.cos(cam.yaw),TGT[1]+dd*Math.sin(cam.pitch),TGT[2]+dd*cp*Math.sin(cam.yaw)];
  const MVP=mul4(persp(0.7,W/H,0.05,80),lookAt(E,TGT)),t=(ts-tStart)/1000;
+ positionAnchors(MVP,cv);
  g.viewport(0,0,W,H);g.clearColor(0.043,0.05,0.067,1);g.clear(g.COLOR_BUFFER_BIT|g.DEPTH_BUFFER_BIT);g.enable(g.DEPTH_TEST);g.depthMask(true);g.disable(g.BLEND);
  let P=PR.gr;g.useProgram(P.p);g.uniformMatrix4fv(P.un.M,false,MVP);g.uniform1f(P.un.T,reduce?0:t);g.bindBuffer(g.ARRAY_BUFFER,BUF.gr);bindAttrs(P,[['q',2]],2);g.drawArrays(g.TRIANGLES,0,6);disableAttrs(P);
- if(meshCount){P=PR.mesh;g.useProgram(P.p);g.uniformMatrix4fv(P.un.M,false,MVP);g.uniform3fv(P.un.E,E);g.bindBuffer(g.ARRAY_BUFFER,BUF.mv);g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,BUF.mi);bindAttrs(P,[['p',3],['n',3],['c',3]],9);g.drawElements(g.TRIANGLES,meshCount,g.UNSIGNED_INT,0);disableAttrs(P)}
+ if(meshCount){P=PR.mesh;g.useProgram(P.p);g.uniformMatrix4fv(P.un.M,false,MVP);g.uniform3fv(P.un.E,E);g.bindBuffer(g.ARRAY_BUFFER,BUF.mv);g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,BUF.mi);bindAttrs(P,[['p',3],['n',3],['c',3]],9);g.uniform2f(P.un.rideDelta,D3.rh-meshRide[0],D3.rr-meshRide[1]);g.bindBuffer(g.ARRAY_BUFFER,BUF.ride);bindAttrs(P,[['rideWeight',1]],1);g.drawElements(g.TRIANGLES,meshCount,g.UNSIGNED_INT,0);disableAttrs(P)}
  if(lineCount){P=PR.line;g.useProgram(P.p);g.enable(g.BLEND);g.blendFunc(g.SRC_ALPHA,g.ONE_MINUS_SRC_ALPHA);g.depthMask(false);
   g.uniformMatrix4fv(P.un.M,false,MVP);g.uniform1f(P.un.F,D3.f);g.uniform2f(P.un.R,W,H);g.uniform1f(P.un.W,1.9*Math.min(2,devicePixelRatio||1));g.uniform1f(P.un.T,t*0.8);g.uniform1f(P.un.A,T3.anim&&!reduce?1:0);
   g.bindBuffer(g.ARRAY_BUFFER,BUF.lv);g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,BUF.li);bindAttrs(P,[['a',3],['b',3],['a2',3],['b2',3],['c',3],['c2',3],['info',2]],20);g.drawElements(g.TRIANGLES,lineCount,g.UNSIGNED_INT,0);disableAttrs(P);g.depthMask(true)}
@@ -1119,14 +1110,42 @@ const g3Upd=[
  seg('#g3Lc',()=>T3.lc,v=>{T3.lc=v;legend3();lineDirty=true;save()}),
  seg('#g3Cc',()=>T3.cc,v=>{T3.cc=v;legend3();if(gl3&&MESH.length)uploadMesh();save()}),
  seg('#g3Mode',()=>S.am,v=>{S.am=v;mark3()}),
- rng('#g3Fw','#og3Fw',()=>S.fw,v=>{S.fw=v;mark3()},v=>v+'°'),
- rng('#g3Rw','#og3Rw',()=>S.rw,v=>{S.rw=v;mark3()},v=>v+'°'),
+ rng('#g3Fw','#og3Fw',()=>S.fw,v=>{S.fw=v;manualWing()},v=>v+'°'),
+ rng('#g3Rw','#og3Rw',()=>S.rw,v=>{S.rw=v;manualWing()},v=>v+'°'),
  rng('#g3Rh','#og3Rh',()=>S.rhF,v=>{S.rhF=v;mark3()},v=>v+' mm'),
  seg('#g3View',()=>T3.view,v=>{T3.view=v;const w=VIEWS[v];const tg=w[3]||[2.55,0.42,0];TG2[0]=tg[0];TG2[1]=tg[1];TG2[2]=tg[2];goal.yaw=w[0]+Math.round((goal.yaw-w[0])/6.2832)*6.2832;goal.pitch=w[1];goal.dist=w[2];T3.auto=false;g3Auto()})];
-g3Upd.push(seg('#g3Sys',()=>S.sys,v=>{S.sys=v;if(S.am==='corner'){S.am='straight';g3Upd[3]()}mark3()}));
+g3Upd.push(seg('#g3Sys',()=>S.sys,v=>{S.sys=v;mark3()}));
+g3Upd.push(rng('#g3RearHeight','#oRearHeight',()=>S.rhR,v=>{S.rhR=v;mark3()},v=>v+' mm'));
+function manualWing(){
+ S.am='corner';T3.demo=false;g3Demo();g3Upd[3]();mark3();
+}
+const anchors=[['front',.24,.37,.32],['body',2.75,1.1,0],['rear',5.08,1.13,0]].map(([part,x,y,z])=>{
+ const button=document.querySelector('[data-pick="'+part+'"]');
+ button.addEventListener('click',()=>document.querySelector('#parts [data-v="'+part+'"]').click());
+ button.setAttribute('aria-pressed',part==='front');
+ return {part,x,y,z,button};
+});
+function positionAnchors(m,canvas){
+ const width=canvas.clientWidth,height=canvas.clientHeight;
+ for(const {x,y,z,button} of anchors){
+  const w=m[3]*x+m[7]*y+m[11]*z+m[15];
+  const px=(1+(m[0]*x+m[4]*y+m[8]*z+m[12])/w)*width/2;
+  const py=(1-(m[1]*x+m[5]*y+m[9]*z+m[13])/w)*height/2;
+  button.hidden=w<=0||px<0||px>width||py<0||py>height;
+  button.style.transform='translate('+px.toFixed(1)+'px,'+py.toFixed(1)+'px) translate(-50%,-100%)';
+ }
+}
+let selectedPart='front';
+seg('#parts',()=>selectedPart,value=>{
+ selectedPart=value;
+ anchors.forEach(({button,part})=>button.setAttribute('aria-pressed',part===value));
+ document.querySelectorAll('[data-panel]').forEach(panel=>panel.hidden=panel.dataset.panel!==value);
+ const view={front:'fwing',body:'side',rear:'rwing'}[value];
+ document.querySelector('#g3View [data-v="'+view+'"]').click();
+});
 const g3Auto=tog('#g3Auto',()=>T3.auto,v=>{T3.auto=v;save()});
 tog('#g3Anim',()=>T3.anim,v=>{T3.anim=v;save()});
-tog('#g3Demo',()=>T3.demo,v=>{T3.demo=v;demoT=performance.now()});
+const g3Demo=tog('#g3Demo',()=>T3.demo,v=>{T3.demo=v;demoT=performance.now()});
 legend3();
 try{init3d()}catch(e){const m=$('#gmsg');m.textContent='3D tidak bisa jalan di sini: '+e.message;m.style.display='block'}
 
@@ -1243,7 +1262,7 @@ const tUpd=[
  seg('#tCam',()=>TR.cam,v=>{TR.cam=v;TR.eye=null}),
  seg('#tSpd',()=>String(TR.spd),v=>{TR.spd=+v}),
  seg('#tCol',()=>TR.col,v=>{TR.col=v;refreshTrack()}),
- seg('#tSys',()=>S.sys,v=>{S.sys=v;refreshTrack();save()})];
+];
 const updTR=()=>$('#tRun').textContent=TR.run?'Jeda':'Jalan';
 $('#tRun').addEventListener('click',()=>{TR.run=!TR.run;updTR()});
 $('#tRestart').addEventListener('click',()=>{TR.tp=0});
