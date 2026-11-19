@@ -149,13 +149,14 @@ main,footer{grid-column:2}.page-heading{padding:22px 0 16px}.page-heading small{
 #parts{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:3px}#parts button{font-size:14px;line-height:1.15;padding:8px 4px}#parts button[aria-pressed=true]{background:#cb302d;color:white}
 @media(max-width:1000px){.wrap{grid-template-columns:174px minmax(0,1fr)}.rail{padding-inline:10px}.garage{grid-template-columns:minmax(0,1fr) 240px}}
 @media(min-width:1100px){.garage{grid-template-columns:minmax(0,1fr) clamp(265px,21vw,350px)}.garage #gl{height:clamp(420px,62vh,800px)}.inspector{padding:22px;gap:22px}.part-controls{padding-block:12px;border-block:1px solid var(--line)}}
+.race-tools{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;padding:12px 0}.race-tools select{background:var(--panel);color:var(--ink);padding:8px;border-radius:6px}.race-tools a,#v-race details a{color:var(--blue)}#raceStart{margin-left:auto}#raceStage{min-height:360px;background:#232c38}.race-timing,.race-dash,#raceFlag{position:absolute;background:#10141ce8;color:#fff;padding:8px 14px;border-radius:8px;z-index:1;pointer-events:none;font-variant-numeric:tabular-nums}.race-timing{top:14px;left:14px;display:grid}.race-dash{right:14px;bottom:14px}.race-dash strong{font-size:32px}.race-dash span{display:inline-block;margin-left:12px}#raceFlag{bottom:14px;left:14px;color:#ffdf8a}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header class="rail">
  <a class="brand" href="#tunnel3d" aria-label="F1 Engineering Lab, buka garasi"><b>F1</b><span>Engineering<br>Lab</span></a>
- <nav id="modules" aria-label="Navigasi utama"><div class="nav-group"><h2>Mobil</h2><a href="#tunnel3d"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 14l2-5 3-1h8l3 1 2 5v4h-3v-2H6v2H3z M6 13h3m6 0h3"/></svg><span>Garasi 3D</span></a><a href="#power"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M13 2 5 13h6l-1 9 9-13h-7z"/></svg><span>Power unit</span></a></div><div class="nav-group"><h2>Aerodinamika</h2><a href="#tunnel"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M2 7h12c5 0 5-5 2-5 M2 12h17c4 0 4 5 1 5 M2 17h8c4 0 4 5 1 5"/></svg><span>Terowongan 2D</span></a><a href="#aero"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 3v17h18 M6 15l4-5 4 2 6-7"/></svg><span>Analisis aero</span></a></div><div class="nav-group"><h2>Lintasan</h2><a href="#track"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 8c0-3 3-5 6-4l11 4c3 1 2 5-1 5h-5l-3 6c-1 3-5 3-6 0z"/></svg><span>Replay 3D</span></a><a href="#lap"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M10 3h4 M12 3v3 M18 7l2-2 M12 10v4l3 1 M20 14a8 8 0 1 1-16 0 8 8 0 1 1 16 0"/></svg><span>Simulasi lap</span></a></div></nav>
+ <nav id="modules" aria-label="Navigasi utama"><div class="nav-group"><h2>Mobil</h2><a href="#tunnel3d"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 14l2-5 3-1h8l3 1 2 5v4h-3v-2H6v2H3z M6 13h3m6 0h3"/></svg><span>Garasi 3D</span></a><a href="#power"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M13 2 5 13h6l-1 9 9-13h-7z"/></svg><span>Power unit</span></a></div><div class="nav-group"><h2>Aerodinamika</h2><a href="#tunnel"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M2 7h12c5 0 5-5 2-5 M2 12h17c4 0 4 5 1 5 M2 17h8c4 0 4 5 1 5"/></svg><span>Terowongan 2D</span></a><a href="#aero"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 3v17h18 M6 15l4-5 4 2 6-7"/></svg><span>Analisis aero</span></a></div><div class="nav-group"><h2>Lintasan</h2><a href="#race"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 21V3m0 1q5-3 9 0t7 0v9q-4 2-8-1t-8 0"/></svg><span>Balapan</span></a><a href="#track"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 8c0-3 3-5 6-4l11 4c3 1 2 5-1 5h-5l-3 6c-1 3-5 3-6 0z"/></svg><span>Replay 3D</span></a><a href="#lap"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M10 3h4 M12 3v3 M18 7l2-2 M12 10v4l3 1 M20 14a8 8 0 1 1-16 0 8 8 0 1 1 16 0"/></svg><span>Simulasi lap</span></a></div></nav>
 </header>
 <main><div class="page-heading"><small id="moduleGroup">Mobil</small><h1 id="moduleName" tabindex="-1">Garasi 3D</h1></div>
 
@@ -180,6 +181,16 @@ main,footer{grid-column:2}.page-heading{padding:22px 0 16px}.page-heading small{
 <details class="display-options"><summary>Kamera dan aliran udara</summary><div class="ctl"><div><span class="lbl">Kamera</span><div class="seg" id="g3View"><button data-v="q">3/4</button><button data-v="side">Samping</button><button data-v="top">Atas</button><button data-v="rear">Belakang</button><button data-v="low">Rendah</button><button data-v="rwing">Sayap belakang</button><button data-v="fwing">Sayap depan</button></div></div><div><span class="lbl">Garis udara dari</span><div class="seg" id="g3Rake"><button data-v="full">Semua</button><button data-v="fw">Sayap depan</button><button data-v="rw">Sayap belakang</button><button data-v="floor">Floor</button><button data-v="tyre">Ban</button></div></div><div><span class="lbl">Warna garis</span><div class="seg" id="g3Lc"><button data-v="speed">Kecepatan</button><button data-v="pres">Tekanan</button></div></div><div><span class="lbl">Warna mobil</span><div class="seg" id="g3Cc"><button data-v="pres">Peta tekanan</button><button data-v="livery">Livery</button></div></div><div><span class="lbl">Tampilan</span><div class="btns"><button class="btn" id="g3Auto">Putar otomatis</button><button class="btn" id="g3Anim">Animasi aliran</button><button class="btn" id="g3Demo">Demo active aero</button></div></div></div></details>
 </section>
 
+<section class="view" id="v-race">
+ <div class="race-tools"><label>Sirkuit <select id="raceCircuit"><option value="monza">Monza</option><option value="silver">Silverstone</option><option value="monaco">Monaco</option></select></label><a href="#tunnel3d">Setup garasi ↗</a>
+ <button class="btn pri" id="raceStart">Mulai balapan</button><button class="btn" id="raceReset">Ulangi grid</button></div>
+ <div class="tun" id="raceStage"><div class="race-timing"><b id="raceRank"></b><span id="raceLap"></span><span id="raceClock"></span></div>
+ <div class="race-dash"><strong id="raceSpeed">0</strong> km/j <span>ERS <b id="raceEnergy"></b></span><span id="raceAero"></span></div><div id="raceFlag" role="status"></div></div>
+ <div class="race-tools"><span>↑ Gas · ← → Setir · Spasi / ↓ Rem · Ctrl ERS · Esc Jeda</span></div>
+ <div class="race-tools"><button class="btn" id="racePit">Pesan pit (P)</button><label>Ban pit <select id="raceCompound"><option value="soft">Soft</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select></label><span id="raceTyre"></span><span id="raceDamage"></span><span id="raceLimits"></span></div>
+ <details><summary>Aturan sprint &amp; pit</summary><p>3 lap kering. Setiap tiga pelanggaran batas lintasan menambah 5 detik. Pesan pit, ambil sisi kanan segera setelah garis start, dan turunkan kecepatan di bawah 86 km/j. Limiter dan kru mengambil alih sampai pintu keluar. Tampilan trek dan jalur pit disederhanakan.</p>
+ <p>Zona sayap mengikuti peta GP 2026 untuk kondisi normal, dipetakan ke layout game. <a href="https://www.fia.com/system/files/decision-document/2026_italian_grand_prix_-_competition_notes_-_circuit_map_pit_lane_drawing_emergency_exits_map_and_red_zone.pdf">Monza</a> · <a href="https://www.fia.com/system/files/decision-document/2026_british_grand_prix_-_competition_notes_-_circuit_map_pit_lane_drawing_emergency_exits_map_and_red_zone.pdf">Silverstone</a> · <a href="https://www.formula1.com/en/latest/article/explained-why-active-aero-will-not-be-used-at-the-monaco-grand-prix.4nLtpjM9ZTUbPBQLmeAbj4">Monaco</a></p></details>
+</section>
 <section class="view" id="v-track">
  <div class="tun">
   <canvas id="trk" aria-label="Replay 3D mobil F1 di sirkuit"></canvas>
@@ -401,7 +412,7 @@ function rearFlap(sys,rw,f){const c=0.22,a0=rw+10,Y=SYS[sys]||SYS.std,r0=a0*Math
 function frontFlaps(fw,f,rh){return [[0.18,0.21,0.115,fw*1.2+6,0],[0.15,0.36,0.185,fw*1.8+10,2]].map(([c,x,y,a0,as])=>{const r0=a0*Math.PI/180,P=[x+c*Math.cos(r0),rh+y+c*Math.sin(r0)],a=a0+(as-a0)*f,ar=a*Math.PI/180;return {c,a,lx:P[0]-c*Math.cos(ar),ly:P[1]-c*Math.sin(ar)}})}
 
 /* ---------- tabs ---------- */
-const views=['tunnel3d','track','tunnel','aero','power','lap'];let cur='tunnel3d',key3='';
+const views=['race','tunnel3d','track','tunnel','aero','power','lap'];let cur='tunnel3d',key3='';
 function route(){
  const h=location.hash.slice(1);cur=views.includes(h)?h:'tunnel3d';
  $$('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+cur));
@@ -413,6 +424,7 @@ function route(){
  if(cur==='aero'){aUpd.forEach(f=>f());drawAero()}
  if(cur==='tunnel3d'){g3Upd.forEach(f=>f());const k=[S.fw,S.rw,S.rhF,S.rhR,S.am,S.sys].join();if(k!==key3){key3=k;need3=true}}
  if(cur==='lap')lUpd.forEach(f=>f());
+ raceRoute();
  if(cur==='track'){tUpd.forEach(f=>f());refreshTrack()}if(cur==='power')drawPower();if(cur==='lap')runLap();
  if(cur==='tunnel')sizeTunnel();
 }
@@ -1180,6 +1192,15 @@ function buildWorld(){
  const ASP=[0.24,0.25,0.27],ASP2=[0.27,0.28,0.3],WHT=[0.92,0.92,0.92],KR=[0.85,0.08,0.06],BAR=[0.8,0.82,0.86],bm=mkMesh();
  for(let i=0;i<N;i++){const j=i+1,c=Math.floor(i/40)%2?ASP:ASP2;
   quadUp(g,side(i,-6,0.03),side(j,-6,0.03),side(j,6,0.03),side(i,6,0.03),c);
+  for(const sideSign of [-1,1]){
+   const pitLane=sideSign===1&&i*DX<330;
+   const gravelColor=(i%3===0)?[.59,.45,.30]:[.62,.48,.32];
+   const surface=pitLane?[.32,.34,.38]:S.track==='monaco'?[.38,.39,.40]:gravelColor;
+   quadUp(g,side(i,sideSign*6,.016),side(j,sideSign*6,.016),side(j,sideSign*14,.016),side(i,sideSign*14,.016),surface);
+   if(pitLane){const stripe=i*DX>=170&&i*DX<190?[1,.74,.12]:[.9,.9,.9];
+    quadUp(g,side(i,7.1,.025),side(j,7.1,.025),side(j,7.35,.025),side(i,7.35,.025),stripe);
+    if(i*DX>=170&&i*DX<190)quadUp(g,side(i,9,.025),side(j,9,.025),side(j,11,.025),side(i,11,.025),stripe);}
+  }
   for(const s of [-1,1]){quadUp(g,side(i,s*5.6,0.035),side(j,s*5.6,0.035),side(j,s*5.85,0.035),side(i,s*5.85,0.035),WHT);
    if(isFinite(Tk.R[i]))quadUp(g,side(i,s*6,0.05),side(j,s*6,0.05),side(j,s*7.4,0.05),side(i,s*7.4,0.05),i%2?KR:WHT);
    const a=side(i,s*14,0),b=side(j,s*14,0),w=W(i),ia=bm.p.length/3;[a,b,[b[0],1.1,b[2]],[a[0],1.1,a[2]]].forEach(q=>addV(bm,q[0],q[1],q[2],BAR,w[0],0.55,w[1]));bm.i.push(ia,ia+1,ia+2,ia,ia+2,ia+3)}}
@@ -1218,7 +1239,7 @@ precision highp float;
 #else
 precision mediump float;
 #endif
-varying vec3 vn;varying vec3 vc;varying vec3 vp;uniform vec3 E;uniform vec3 SK;void main(){vec3 N=normalize(vn);vec3 V=normalize(E-vp);if(dot(N,V)<0.0)N=-N;vec3 L=normalize(vec3(-0.4,0.85,0.3));float d=max(dot(N,L),0.0);vec3 H=normalize(L+V);float s=pow(max(dot(N,H),0.0),40.0);vec3 col=vc*(0.45+0.65*d)+vec3(0.22*s);float f=1.0-exp(-length(vp-E)*0.0009);gl_FragColor=vec4(mix(col,SK,f),1.0);}`,g);
+varying vec3 vn;varying vec3 vc;varying vec3 vp;uniform vec3 E;uniform vec3 SK;uniform vec3 tint;void main(){vec3 N=normalize(vn);vec3 V=normalize(E-vp);if(dot(N,V)<0.0)N=-N;vec3 L=normalize(vec3(-0.4,0.85,0.3));float d=max(dot(N,L),0.0);vec3 H=normalize(L+V);float s=pow(max(dot(N,H),0.0),40.0);vec3 paint=mix(vc,tint,step(vc.g*2.0+.15,vc.r)*step(.01,length(tint-vec3(1.0))));vec3 col=paint*(0.45+0.65*d)+vec3(0.22*s);float f=1.0-exp(-length(vp-E)*0.0009);gl_FragColor=vec4(mix(col,SK,f),1.0);}`,g);
  const pts=new Map();
  cv.addEventListener('pointerdown',e=>{pts.set(e.pointerId,1)});
  cv.addEventListener('pointerup',e=>pts.delete(e.pointerId));
@@ -1227,7 +1248,7 @@ varying vec3 vn;varying vec3 vc;varying vec3 vp;uniform vec3 E;uniform vec3 SK;v
 }
 function refreshTrack(){
  if(!TR.gl)return;const g=TR.gl;
- if(TR.key!==S.track){TR.key=S.track;TR.world=meshToGL(g,buildWorld(),false);const Tk=buildTrack(S.track),N=Tk.N;TR.cams=[];for(let i=0;i<N;i+=55){const p=Tk.pts[i],q=Tk.pts[(i+2)%N],t=norm3([q[0]-p[0],0,-(q[1]-p[1])]),sg=(i/55)%2?1:-1;TR.cams.push([p[0]-t[2]*28*sg,7+((i*7)%5),-p[1]+t[0]*28*sg])}drawMini()}
+ if(TR.key!==S.track){if(TR.world){g.deleteBuffer(TR.world.vb);g.deleteBuffer(TR.world.ib)}TR.key=S.track;TR.world=meshToGL(g,buildWorld(),false);const Tk=buildTrack(S.track),N=Tk.N;TR.cams=[];for(let i=0;i<N;i+=55){const p=Tk.pts[i],q=Tk.pts[(i+2)%N],t=norm3([q[0]-p[0],0,-(q[1]-p[1])]),sg=(i/55)%2?1:-1;TR.cams.push([p[0]-t[2]*28*sg,7+((i*7)%5),-p[1]+t[0]*28*sg])}drawMini()}
  const ck=[S.fw,S.rw,S.rhF,S.rhR,S.cmp,TR.col,S.sys].join();if(ck!==TR.ckey){TR.ckey=ck;TR.car=buildCarStates()}
  TR.lap=lapData();$('#tLapN').max=S.laps;
 }
@@ -1236,7 +1257,7 @@ function drawMini(){const s=$('#hMap'),pts=buildTrack(S.track).pts;let x0=1e9,x1
  s.innerHTML=`<polyline points="${pts.filter((_,i)=>i%4===0).map(p=>M(p).join(',')).join(' ')}" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="3" stroke-linejoin="round"/><circle id="hDot" r="5" fill="#e10600" stroke="#fff" stroke-width="2"/>`}
 const GEARS=[0,90,125,160,195,235,275,310];
 function frameT(ts){
- requestAnimationFrame(frameT);if(cur!=='track'||!TR.gl||!TR.lap)return;
+ requestAnimationFrame(frameT);if(cur==='race'){raceDraw(ts);return}if(cur!=='track'||!TR.gl||!TR.lap)return;
  const dt=Math.min(0.05,(ts-(TR.lastT||ts))/1000);TR.lastT=ts;
  const {r,L,n}=TR.lap,Tk=r.Tk,N=r.Nn,tm=r.tm,T2=tm[N];
  if(TR.run)TR.tp=(TR.tp+dt*TR.spd)%T2;
@@ -1257,7 +1278,7 @@ function frameT(ts){
  if(!smooth||!TR.eye){TR.eye=eT;TR.tgt=gT}else{const k=1-Math.exp(-dt*7);TR.eye=add(TR.eye,sub3(eT,TR.eye),k);TR.tgt=add(TR.tgt,sub3(gT,TR.tgt),k)}
  const g=TR.gl,cv=g.canvas,Wc=cv.width,Hc=cv.height,MVP=mul4(persp(TR.cam==='tv'?0.45:TR.cam==='onboard'?1.0:0.8,Wc/Hc,0.4,4000),lookAt(TR.eye,TR.tgt)),Pp=TR.P;
  g.viewport(0,0,Wc,Hc);g.clearColor(SKY[0],SKY[1],SKY[2],1);g.clear(g.COLOR_BUFFER_BIT|g.DEPTH_BUFFER_BIT);g.enable(g.DEPTH_TEST);
- g.useProgram(Pp.p);g.uniformMatrix4fv(Pp.un.M,false,MVP);g.uniform3fv(Pp.un.E,TR.eye);g.uniform3fv(Pp.un.SK,SKY);
+ g.useProgram(Pp.p);g.uniform3fv(Pp.un.tint,[1,1,1]);g.uniformMatrix4fv(Pp.un.M,false,MVP);g.uniform3fv(Pp.un.E,TR.eye);g.uniform3fv(Pp.un.SK,SKY);
  for(const [b,next,mo,mixValue] of [[TR.world,TR.world,I,0],[st,stNext,Mo,stateMix]]){g.uniformMatrix4fv(Pp.un.Mo,false,mo);g.uniform1f(Pp.un.blendState,mixValue);g.bindBuffer(g.ARRAY_BUFFER,b.vb);g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,b.ib);bindAttrs(Pp,[['p',3],['n',3],['c',3]],9,g);g.bindBuffer(g.ARRAY_BUFFER,next.vb);bindAttrs(Pp,[['p2',3],['n2',3],['c2',3]],9,g);g.drawElements(g.TRIANGLES,b.n,g.UNSIGNED_INT,0);disableAttrs(Pp,g)}
  // HUD
  const prog=TR.tp/T2,wear=L.w0.map((w,q)=>w+(L.w1[q]-w)*prog),gear=GEARS.filter(x=>vk>=x).length;
@@ -1283,6 +1304,161 @@ const updTR=()=>$('#tRun').textContent=TR.run?'Jeda':'Jalan';
 $('#tRun').addEventListener('click',()=>{TR.run=!TR.run;updTR()});
 $('#tRestart').addEventListener('click',()=>{TR.tp=0});
 try{initTrack()}catch(e){const m=$('#tmsg3');m.textContent='3D tidak bisa jalan di sini: '+e.message;m.style.display='block'}
+
+const raceKeys=new Set();
+const raceCanvas=$('#trk'), replayParent=raceCanvas.parentElement;
+const raceMount=$('#raceStage'), raceButton=$('#raceStart');
+const zones={monza:[[18,30],[5,70],[12,170],[16,130]],silver:[[22,65],[6,55],[10,155],[17,65]],monaco:[]};
+let race=null, raceTick=0;
+function raceRoute(){
+ raceKeys.clear();
+ if(cur==='race'){
+  raceMount.prepend(raceCanvas);$('#raceCircuit').value=S.track;
+  if(!race||race.track!==S.track)resetRace();
+  else if(TR.gl){refreshTrack();race.setup=aero(S,'corner');raceHud()}
+ }else{
+  if(race?.state==='running')race.state='paused';
+  if(raceCanvas.parentElement===raceMount)replayParent.prepend(raceCanvas);
+ }
+}
+function resetRace(){
+ S.track=$('#raceCircuit').value;save();
+ const tk=buildTrack(S.track),len=tk.N*DX;
+ const zone=new Uint8Array(tk.N);
+ let index=0;
+ TRACKS[S.track].seg.forEach(([length],seg)=>{
+  const count=Math.max(1,Math.round(length/DX)),entry=zones[S.track].find(z=>z[0]===seg);
+  if(entry)for(let n=Math.ceil(entry[1]/DX);n<count;n++)zone[index+n]=1;
+  index+=count;
+ });
+ if(zone[tk.N-1])zone.fill(1,0,Math.round(TRACKS[S.track].seg[0][0]/DX));
+ const rivals=Array.from({length:5},(_,i)=>({dist:8+i*8,x:i%2?2:-2,v:0,pace:.76+i*.024}));
+ race={track:S.track,setup:aero(S,'corner'),tk,len,zone,rivals,dist:0,x:-2,v:0,lateral:0,yaw:0,time:0,charge:1,wear:0,penalty:0,limits:0,out:false,
+  damage:{front:0,rear:0,left:0,right:0},cool:0,wing:0,requested:false,pit:'',box:0,compound:S.cmp,state:'grid',note:'Grid siap',noteTime:4,finish:0};
+ raceKeys.clear();raceTick=0;
+ if(TR.gl)refreshTrack();
+ raceHud();
+}
+function raceNotice(msg){race.note=msg;race.noteTime=3}
+function raceHud(){
+ const r=race,rank=1+r.rivals.filter(a=>r.finish?a.finish&&a.finish<r.finish+r.penalty:a.dist>r.dist).length;
+ $('#raceSpeed').textContent=Math.round(r.v*3.6);
+ $('#raceRank').textContent='P'+rank+' / 6';
+ $('#raceLap').textContent='Lap '+Math.min(3,1+Math.floor(r.dist/r.len))+' / 3';
+ $('#raceEnergy').textContent=Math.round(100*r.charge)+'%';
+ $('#raceAero').textContent=r.wing>.5?'Straight':'Corner';
+ $('#raceClock').textContent=fmtT(r.time)+'  +'+r.penalty+' s';
+ $('#raceTyre').textContent=CMP[r.compound].n+' · aus '+Math.round(r.wear*100)+'%';
+ const labels={front:'Sayap depan',rear:'Sayap belakang',left:'Roda kiri',right:'Roda kanan'};
+ $('#raceDamage').textContent=Object.entries(r.damage).filter(([,v])=>v>.01).map(([k,v])=>labels[k]+' '+Math.round(v*100)+'%').join(' · ')||'Mobil utuh';
+ $('#raceFlag').textContent=r.state==='finish'?'Finis · '+fmtT(r.finish+r.penalty):r.pit==='box'?'Servis '+r.box.toFixed(1)+' s':r.pit?'Pit lane · limiter':r.noteTime>0?r.note:r.requested?'Pit dipesan · masuk kanan setelah garis start':r.out?'Di luar lintasan':'Bendera hijau';
+ raceButton.textContent=({grid:'Mulai balapan',paused:'Lanjutkan',running:'Jeda',finish:'Balap lagi'})[r.state];
+ $('#raceLimits').textContent='Track limits '+r.limits;
+}
+function pose(dist,offset=0){
+ const t=race.tk,u=((dist/DX%t.N)+t.N)%t.N,i=Math.floor(u),f=u-i;
+ const pt=n=>t.pts[(n+t.N)%t.N],a=pt(i),b=pt(i+1),prev=pt(i-1),next=pt(i+2);
+ const dx=(b[0]-prev[0])*(1-f)+(next[0]-a[0])*f,dz=(prev[1]-b[1])*(1-f)+(a[1]-next[1])*f,h=Math.hypot(dx,dz)||1;
+ return {x:a[0]+(b[0]-a[0])*f-offset*dz/h,z:-a[1]-(b[1]-a[1])*f+offset*dx/h,dx:dx/h,dz:dz/h,i};
+}
+function impact(part,intensity){
+ const r=race;if(r.cool>0)return;
+ r.damage[part]=cl(r.damage[part]+intensity,.01,1);r.v*=1-Math.min(.5,intensity);r.cool=1;
+ raceNotice('Kontak · '+({front:'sayap depan',rear:'sayap belakang',left:'roda kiri',right:'roda kanan'})[part]);
+}
+function requestPit(){if(race?.state==='running'&&!race.pit){race.requested=!race.requested;raceNotice(race.requested?'Pit dipesan · masuk kanan setelah garis start':'Pit dibatalkan')}}
+function raceStep(dt){
+ const r=race;if(r.state!=='running')return;
+ r.time+=dt;r.cool-=dt;r.noteTime-=dt;
+ const loc=r.dist%r.len,i=Math.floor(loc/DX),brake=raceKeys.has('Space')||raceKeys.has('ArrowDown');
+ const gas=raceKeys.has('ArrowUp'),steer=Number(raceKeys.has('ArrowRight'))-Number(raceKeys.has('ArrowLeft'));
+ const setup=r.setup,wheelLoss=(r.damage.left+r.damage.right)*.22;
+ const grip=CMP[r.compound].cf*(1-.38*r.wear)*(1-wheelLoss)*(1+.012*(S.fw-12)+.009*(S.rw-14))*(1-.25*r.damage.front-.18*r.damage.rear);
+ const gravel=r.track!=='monaco'&&Math.abs(r.x)>6.8&&!r.pit,boost=gas&&!brake&&!gravel&&!r.pit&&raceKeys.has('Control')&&r.charge>.002;
+ const wasStraight=r.zone[i]&&!brake&&!gravel&&!r.pit;
+ r.wing+=(Number(!!wasStraight)-r.wing)*(1-Math.exp(-dt*6));
+ for(const [n,a] of r.rivals.entries()){
+  const idx=Math.floor(a.dist/DX)%r.tk.N,goal=TR.lap.r.v[idx]*a.pace;
+  a.v+=cl(goal-a.v,-28*dt,10*dt);a.dist+=a.v*dt;
+  if(!a.finish&&a.dist>=3*r.len)a.finish=r.time;
+  const gap=((a.dist-r.dist+r.len*1.5)%r.len)-r.len/2;
+  const lane=Math.abs(gap)<28&&Math.abs(r.x-a.x)<2.4?(r.x>0?-3:3):Math.sin(a.dist/145+n)*2.7;
+  a.x+=cl(lane-a.x,-2*dt,2*dt);
+  if(!r.pit&&Math.abs(gap)<4.7&&Math.abs(a.x-r.x)<1.8){
+   impact(Math.abs(gap)>2?(gap>0?'front':'rear'):(a.x>r.x?'right':'left'),cl(Math.abs(a.v-r.v)*.014+.05,.05,.6));
+   r.x+=Math.sign(r.x-a.x||1)*1.5*dt;
+  }
+ }
+ if(r.pit==='box'){
+  r.box-=dt;r.v=0;
+  if(r.box<=0){r.compound=$('#raceCompound').value;r.wear=0;for(const k in r.damage)r.damage[k]=0;r.pit='exit'}
+ }else if(r.pit){
+  r.v=loc<180&&r.pit==='entry'?Math.min(20,Math.sqrt(12*Math.max(1,180-loc))):18;
+  r.x+=(10-r.x)*Math.min(1,dt*2);r.dist+=r.v*dt;
+  if(loc>=179&&r.pit==='entry'){r.box=2.7+8*Math.max(...Object.values(r.damage));r.pit='box'}
+  if(loc>=310&&r.pit==='exit'){r.pit='';r.requested=false;r.x=4.8;raceNotice('Pit selesai')}
+ }else{
+  const drag=.00115*(setup.cd/1.1)*(1-.28*r.wing);
+  r.v=cl(r.v+dt*((gas?13+5*Number(boost):0)-.9-drag*r.v*r.v-(brake?30*grip:0)-(gravel?4+.32*r.v:0)),0,100);
+  const ahead=pose(r.dist+5),here=pose(r.dist);
+  const curve=Math.atan2(here.dx*ahead.dz-here.dz*ahead.dx,here.dx*ahead.dx+here.dz*ahead.dz)/5;
+  const limit=grip*(13+.0025*r.v*r.v)*(gravel?.48:1)*(1-.1*r.wing);
+  const turn=steer*Math.min(.65,r.v*.045);
+  const yawRate=cl(turn+curve*r.v*.65,-limit/Math.max(5,r.v),limit/Math.max(5,r.v));
+  r.yaw=cl(r.yaw+(yawRate-curve*r.v-r.yaw*1.4)*dt,-.85,.85);
+  r.lateral+=(Math.sin(r.yaw)*r.v-r.lateral)*(1-Math.exp(-dt*(gravel?2:6)));
+  r.x+=r.lateral*dt;
+  const demand=r.v*r.v*curve;
+  if(Math.abs(r.x)>12.7){impact(r.x>0?'right':'left',cl(Math.abs(r.lateral)*.035,.06,.5));r.x=cl(r.x,-12.7,12.7);r.lateral*=.1}
+  r.dist+=Math.cos(r.yaw)*r.v*dt;r.wear=cl(r.wear+dt*r.v*(1+Math.abs(demand)*.02)*CMP[r.compound].wr/90000,0,1);
+  r.charge=cl(r.charge+dt*((brake&&r.v>4?.035:0)-(boost?.07:0)),0,1);
+  if(r.requested&&loc<130&&r.x>4&&r.v<24){r.pit='entry';r.out=false}
+  const outside=!r.pit&&Math.abs(r.x)>6.9;
+  if(outside&&!r.out){r.limits++;if(r.limits%3===0)r.penalty+=5;raceNotice('Track limits · '+r.limits+(r.limits%3===0?' · +5 s':''))}
+  r.out=outside;
+ }
+ if(r.dist>=3*r.len){r.finish=r.time;r.state='finish';raceKeys.clear()}
+}
+function raceDraw(ts){
+ const r=race,g=TR.gl;if(!r||!g||!TR.world||!TR.car)return;
+ const elapsed=Math.min(.12,(ts-(raceTick||ts))/1000);raceTick=ts;
+ for(let left=elapsed;left>.00001;left-=1/90)raceStep(Math.min(left,1/90));
+ const p=pose(r.dist,r.x),aim=pose(r.dist+18,r.x*.65),eye=[p.x-p.dx*10,3.4,p.z-p.dz*10];
+ const cv=g.canvas,P=TR.P,M=mul4(persp(.87,cv.width/cv.height,.3,3500),lookAt(eye,[aim.x,.7,aim.z]));
+ g.viewport(0,0,cv.width,cv.height);g.clearColor(...SKY,1);g.clear(g.COLOR_BUFFER_BIT|g.DEPTH_BUFFER_BIT);g.enable(g.DEPTH_TEST);g.useProgram(P.p);
+ g.uniformMatrix4fv(P.un.M,false,M);g.uniform3fv(P.un.E,eye);g.uniform3fv(P.un.SK,SKY);
+ function draw(b,next,model,blend,tint){
+  g.uniform3fv(P.un.tint,tint);g.uniform1f(P.un.blendState,blend);g.uniformMatrix4fv(P.un.Mo,false,model);
+  g.bindBuffer(g.ARRAY_BUFFER,b.vb);bindAttrs(P,[['p',3],['n',3],['c',3]],9,g);
+  g.bindBuffer(g.ARRAY_BUFFER,next.vb);bindAttrs(P,[['p2',3],['n2',3],['c2',3]],9,g);
+  g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,b.ib);g.drawElements(g.TRIANGLES,b.n,g.UNSIGNED_INT,0);disableAttrs(P,g);
+ }
+ draw(TR.world,TR.world,[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],0,[1,1,1]);
+ function car(q,angle,wing,color){
+  const h=Math.atan2(q.dz,q.dx)+angle,x=Math.cos(h),z=Math.sin(h),u=wing*(TR.car.length-1),k=Math.min(TR.car.length-2,Math.floor(u));
+  draw(TR.car[k],TR.car[k+1],[-x,0,-z,0,0,1,0,0,z,0,-x,0,q.x+x*2.6,.04,q.z+z*2.6,1],u-k,color);
+ }
+ const colors=[[.35,1,1],[1,.7,.1],[.55,.45,1],[.25,1,.55],[1,.6,.8]];
+ r.rivals.forEach((a,n)=>{const q=pose(a.dist,a.x);car(q,0,r.zone[q.i],colors[n])});car(p,r.yaw,r.wing,[1,1,1]);
+ raceHud();
+}
+raceButton.onclick=()=>{
+ if(!TR.gl){$('#raceFlag').textContent='WebGL diperlukan untuk balapan';return}
+ if(race.state==='finish')resetRace();
+ race.state=race.state==='running'?'paused':'running';raceKeys.clear();raceTick=0;raceHud();raceButton.blur();
+};
+$('#raceCircuit').onchange=resetRace;$('#raceReset').onclick=resetRace;$('#racePit').onclick=requestPit;
+function pauseRace(){raceKeys.clear();if(race?.state==='running'){race.state='paused';raceHud()}}
+addEventListener('blur',pauseRace);document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseRace()});
+addEventListener('keydown',e=>{
+ if(cur!=='race'||e.target.matches('select,input')||e.metaKey||e.altKey)return;
+ if(e.code==='Escape'){pauseRace();return}
+ if(race?.state!=='running')return;
+ if(e.code==='KeyP'&&!e.repeat){requestPit();return}
+ const key=e.key==='Control'?'Control':e.code;
+ if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','Control'].includes(key)){e.preventDefault();raceKeys.add(key)}
+});
+addEventListener('keyup',e=>raceKeys.delete(e.key==='Control'?'Control':e.code));
 
 window.f1lab={lapSim,aero,S,topSpeed,T,buildBarrier,initFlow,step,get:()=>[FxS,FyS,MyS,0.5*T.u0*T.u0*lref()]};
 route();requestAnimationFrame(loop);requestAnimationFrame(animDot);
